@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DBTI · 认知偏差报告</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+  <link rel="stylesheet" href="/src/style.css" />
+  <style>
+    /* ===== 双结果头部 ===== */
+    .compare-header { text-align: center; margin-bottom: 4px; }
+    .compare-header h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--text);
+    }
+
+    .type-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .type-box {
+      flex: 1;
+      border-radius: 10px;
+      padding: 14px 12px;
+      text-align: center;
+    }
+    .type-box.other {
+      background: rgba(90, 138, 98, 0.12);
+      border: 1.5px solid rgba(90, 138, 98, 0.3);
+    }
+    .type-box.self {
+      background: rgba(66, 133, 244, 0.08);
+      border: 1.5px solid rgba(66, 133, 244, 0.25);
+    }
+    .type-box-label {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+    .type-box-code {
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-bottom: 2px;
+    }
+    .type-box.other .type-box-code { color: #5a8a62; }
+    .type-box.self  .type-box-code { color: #4285f4; }
+    .type-box-cn {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* ===== 偏差评分区 ===== */
+    .deviation-block {
+      background: var(--accent-light);
+      border-radius: 12px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .deviation-pct {
+      font-size: 2.4rem;
+      font-weight: 900;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .deviation-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .deviation-level-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .deviation-quote {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      font-style: italic;
+      margin-bottom: 10px;
+    }
+    .deviation-desc {
+      font-size: 0.84rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ===== 图例 ===== */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 8px;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+    .legend-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+    .legend-dot.other { background: rgba(90, 138, 98, 0.9); }
+    .legend-dot.self  { background: rgba(66, 133, 244, 0.9); }
+
+    /* ===== 雷达图 ===== */
+    .radar-wrap { text-align: center; margin: 0 -8px 4px; }
+    .radar-wrap canvas { max-width: 100%; }
+
+    /* ===== 层分隔 ===== */
+    .layer-sep { height: 1px; background: var(--border); margin: 20px 0; }
+
+    /* ===== 维度金句 ===== */
+    .gap-quotes-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .gap-quote-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.6;
+    }
+    .gap-quote-item:last-child { border-bottom: none; }
+    .gap-quote-bullet {
+      flex-shrink: 0;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      margin-top: 8px;
+    }
+
+    /* ===== 操作按钮 ===== */
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .action-group a, .action-group button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    /* ===== 错误页 ===== */
+    .error-card {
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .error-card h2 { margin-bottom: 12px; font-size: 1.2rem; }
+    .error-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-bottom: 24px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <section class="page active">
+      <div class="card" id="compare-card" style="padding: 28px 20px;">
+        <p style="text-align:center;color:var(--text-secondary);font-size:0.9rem;">加载中…</p>
+      </div>
+    </section>
+  </div>
+
+  <script type="module">
+    import { calculateDeviation }              from '/src/compare.js'
+    import { deviationLevels, dimensionGapQuotes } from '/data/gap-quotes.js'
+
+    // ===== 读取参数和数据 =====
+    const id       = new URLSearchParams(window.location.search).get('id') || ''
+    const card     = document.getElementById('compare-card')
+
+    const otherRaw = id ? localStorage.getItem('dbti_session_' + id)        : null
+    const selfRaw  = id ? localStorage.getItem('dbti_session_' + id + '_self') : null
+
+    if (!id || !otherRaw || !selfRaw) {
+      card.innerHTML = `
+        <div class="error-card">
+          <h2>对照数据不完整</h2>
+          <p>可能 ta 还没有完成自测，或者数据保存在另一台设备上。<br/>
+             请确认 ta 通过你发送的邀请链接完成了测试，且在同一浏览器。</p>
+          <a href="/" class="btn btn-primary" style="display:inline-block;">返回首页</a>
+        </div>`
+    } else {
+      const other = JSON.parse(otherRaw)   // 他测方的数据（你眼中的 ta）
+      const self  = JSON.parse(selfRaw)    // 自测方的数据（ta 自己的）
+
+      const { deviationPercent, dimensionDiffs, level } =
+        calculateDeviation(other.vector, self.vector)
+
+      const levelInfo = deviationLevels[level]
+
+      // ===== 筛出偏差最大的维度，选 3~5 句金句 =====
+      const dimOrder = ['S1','S2','S3','E1','E2','E3','A1','A2','A3','Ac1','Ac2','Ac3','So1','So2','So3']
+      const eligibleDims = dimensionDiffs
+        .map((diff, i) => ({ i, diff }))
+        .filter(d => d.diff >= 2)
+        .sort((a, b) => b.diff - a.diff)
+        .slice(0, 5)
+
+      const selectedQuotes = eligibleDims.map(({ i }) => {
+        const pool = dimensionGapQuotes[i] || []
+        return pool[Math.floor(Math.random() * pool.length)] || null
+      }).filter(Boolean)
+
+      const quotesHTML = selectedQuotes.length
+        ? selectedQuotes.map(q => `
+            <div class="gap-quote-item">
+              <span class="gap-quote-bullet"></span>
+              <span>${q}</span>
+            </div>`).join('')
+        : `<p style="font-size:0.85rem;color:var(--text-secondary);">两人认知高度一致，没啥可说的。</p>`
+
+      card.innerHTML = `
+        <!-- 标题 -->
+        <div class="compare-header">
+          <h1>认知偏差报告</h1>
+        </div>
+
+        <!-- 双结果 -->
+        <div class="type-row">
+          <div class="type-box other">
+            <div class="type-box-label">你眼中的 ta</div>
+            <div class="type-box-code">${other.type}</div>
+            <div class="type-box-cn">${other.typeCn}</div>
+          </div>
+          <div class="type-box self">
+            <div class="type-box-label">${other.nickname} 自测</div>
+            <div class="type-box-code">${self.type}</div>
+            <div class="type-box-cn">${self.typeCn}</div>
+          </div>
+        </div>
+
+        <!-- 偏差评分 -->
+        <div class="deviation-block">
+          <div class="deviation-pct">${deviationPercent}%</div>
+          <div class="deviation-label">认知偏差</div>
+          <div class="deviation-level-name">${levelInfo.name}</div>
+          <div class="deviation-quote">「${levelInfo.quote}」</div>
+          <div class="deviation-desc">${levelInfo.desc}</div>
+        </div>
+
+        <!-- 双线雷达图 -->
+        <div class="legend">
+          <span><span class="legend-dot other"></span>你眼中的 ta</span>
+          <span><span class="legend-dot self"></span>${other.nickname} 自测</span>
+        </div>
+        <div class="radar-wrap">
+          <canvas id="dual-radar" width="320" height="320"></canvas>
+        </div>
+
+        <div class="layer-sep"></div>
+
+        <!-- 维度金句 -->
+        <div class="gap-quotes-title">偏差最大的几个维度</div>
+        <div id="gap-quotes">${quotesHTML}</div>
+
+        <div class="layer-sep"></div>
+
+        <!-- 分享卡 -->
+        <button id="btn-share" class="btn btn-primary" style="width:100%;margin-bottom:10px;">生成对照分享卡</button>
+
+        <!-- 操作 -->
+        <div class="action-group">
+          <a href="/other-test.html" class="btn btn-secondary">再测一个 ta</a>
+          <a href="/self-test.html"  class="btn btn-secondary">测测我自己</a>
+          <a href="/"                class="btn btn-secondary">返回首页</a>
+        </div>
+      `
+
+      // ===== 绘制双线雷达图 =====
+      const canvas = document.getElementById('dual-radar')
+      drawDualRadar(canvas, other.vector, self.vector, dimOrder)
+
+      // ===== 分享卡 =====
+      document.getElementById('btn-share').addEventListener('click', () => {
+        generateCompareCard(other, self, deviationPercent, levelInfo)
+      })
+    }
+
+    // ===== 双线雷达图函数 =====
+    function drawDualRadar(canvas, otherVec, selfVec, dimOrder) {
+      const dpr  = window.devicePixelRatio || 1
+      const size = 320
+      canvas.width  = size * dpr
+      canvas.height = size * dpr
+      canvas.style.width  = size + 'px'
+      canvas.style.height = size + 'px'
+
+      const ctx = canvas.getContext('2d')
+      ctx.scale(dpr, dpr)
+
+      const cx = size / 2, cy = size / 2
+      const maxR = size / 2 - 42
+      const n = dimOrder.length
+      const step  = (Math.PI * 2) / n
+      const start = -Math.PI / 2
+
+      ctx.clearRect(0, 0, size, size)
+
+      // 背景圆环
+      for (let lv = 3; lv >= 1; lv--) {
+        const r = (lv / 3) * maxR
+        ctx.beginPath()
+        ctx.arc(cx, cy, r, 0, Math.PI * 2)
+        ctx.fillStyle   = `rgba(76,103,82,${lv === 3 ? 0.06 : lv === 2 ? 0.04 : 0.02})`
+        ctx.strokeStyle = 'rgba(76,103,82,0.12)'
+        ctx.lineWidth   = 0.5
+        ctx.fill(); ctx.stroke()
+      }
+
+      // 轴线 + 标签
+      const DIM_LABELS = ['自信','自知','价值','安全','投入','边界',
+                          '世界观','规则','意义','动机','决策','执行',
+                          '社交','界限','真实']
+      ctx.font          = '10px system-ui, sans-serif'
+      ctx.textAlign     = 'center'
+      ctx.textBaseline  = 'middle'
+      ctx.fillStyle     = '#6b7b6e'
+
+      for (let i = 0; i < n; i++) {
+        const angle = start + i * step
+        const ex = cx + Math.cos(angle) * maxR
+        const ey = cy + Math.sin(angle) * maxR
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(ex, ey)
+        ctx.strokeStyle = 'rgba(76,103,82,0.12)'; ctx.lineWidth = 0.5; ctx.stroke()
+
+        const lr = maxR + 20
+        ctx.fillText(DIM_LABELS[i], cx + Math.cos(angle) * lr, cy + Math.sin(angle) * lr)
+      }
+
+      // 绘制一个多边形
+      function drawPoly(vec, fillColor, strokeColor) {
+        ctx.beginPath()
+        for (let i = 0; i < n; i++) {
+          const angle = start + i * step
+          const r = ((vec[i] || 2) / 3) * maxR
+          const x = cx + Math.cos(angle) * r
+          const y = cy + Math.sin(angle) * r
+          i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+        }
+        ctx.closePath()
+        ctx.fillStyle   = fillColor;   ctx.fill()
+        ctx.strokeStyle = strokeColor; ctx.lineWidth = 2; ctx.stroke()
+      }
+
+      // 他测（绿）在下，自测（蓝）在上
+      drawPoly(otherVec, 'rgba(90,138,98,0.2)',   'rgba(90,138,98,0.8)')
+      drawPoly(selfVec,  'rgba(66,133,244,0.15)', 'rgba(66,133,244,0.8)')
+
+      // 数据点
+      function drawDots(vec, color) {
+        for (let i = 0; i < n; i++) {
+          const angle = start + i * step
+          const r = ((vec[i] || 2) / 3) * maxR
+          ctx.beginPath()
+          ctx.arc(cx + Math.cos(angle) * r, cy + Math.sin(angle) * r, 3, 0, Math.PI * 2)
+          ctx.fillStyle = color; ctx.fill()
+        }
+      }
+      drawDots(otherVec, '#5a8a62')
+      drawDots(selfVec,  '#4285f4')
+    }
+
+    // ===== 对照分享卡 =====
+    function generateCompareCard(other, self, deviationPercent, levelInfo) {
+      const dpr = 2, W = 750, H = 900
+      const cv  = document.createElement('canvas')
+      cv.width  = W * dpr; cv.height = H * dpr
+      const ctx = cv.getContext('2d')
+      ctx.scale(dpr, dpr)
+
+      // 背景
+      ctx.fillStyle = '#141c18'; ctx.fillRect(0, 0, W, H)
+
+      // 卡片
+      roundRect(ctx, 32, 32, W - 64, H - 64, 20)
+      ctx.fillStyle = '#1e2a22'; ctx.fill()
+
+      const MID   = W / 2
+      const font  = (sz, w='400') =>
+        `${w} ${sz}px system-ui,"PingFang SC","Microsoft YaHei",sans-serif`
+
+      let y = 80
+
+      // 标题
+      ctx.textAlign = 'center'
+      ctx.font = font(16, '600'); ctx.fillStyle = '#8fa893'
+      ctx.fillText('认知偏差报告', MID, y); y += 36
+
+      // 代号
+      ctx.font = font(20, '700'); ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(`「${other.nickname}」`, MID, y); y += 50
+
+      // 双类型
+      const bx = 80, bw = (W - 160 - 20) / 2
+      roundRect(ctx, bx, y, bw, 90, 10)
+      ctx.fillStyle = 'rgba(90,138,98,0.15)'; ctx.fill()
+      roundRect(ctx, bx + bw + 20, y, bw, 90, 10)
+      ctx.fillStyle = 'rgba(66,133,244,0.1)'; ctx.fill()
+
+      ctx.textAlign = 'center'
+      const lx = bx + bw / 2, rx = bx + bw + 20 + bw / 2
+
+      ctx.font = font(11, '600'); ctx.fillStyle = '#8fa893'
+      ctx.fillText('你眼中的 ta', lx, y + 20)
+      ctx.fillText('ta 自测结果', rx, y + 20)
+
+      ctx.font = font(30, '900')
+      ctx.fillStyle = '#5a8a62'; ctx.fillText(other.type, lx, y + 56)
+      ctx.fillStyle = '#4285f4'; ctx.fillText(self.type,  rx, y + 56)
+
+      ctx.font = font(14, '600'); ctx.fillStyle = '#c8d8cc'
+      ctx.fillText(other.typeCn, lx, y + 76)
+      ctx.fillText(self.typeCn,  rx, y + 76)
+      y += 110
+
+      // 分割线
+      ctx.strokeStyle = '#2e3d32'; ctx.lineWidth = 1
+      ctx.beginPath(); ctx.moveTo(96, y); ctx.lineTo(W - 96, y); ctx.stroke()
+      y += 32
+
+      // 偏差分数
+      ctx.font = font(60, '900'); ctx.fillStyle = '#5a8a62'
+      ctx.fillText(deviationPercent + '%', MID, y); y += 20
+      ctx.font = font(14, '500'); ctx.fillStyle = '#8fa893'
+      ctx.fillText('认知偏差', MID, y); y += 28
+      ctx.font = font(20, '800'); ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(levelInfo.name, MID, y); y += 30
+      ctx.font = font(15, '400'); ctx.fillStyle = '#8fa893'
+      ctx.fillText(`「${levelInfo.quote}」`, MID, y); y += 50
+
+      // 分割线
+      ctx.strokeStyle = '#2e3d32'; ctx.lineWidth = 1
+      ctx.beginPath(); ctx.moveTo(96, y); ctx.lineTo(W - 96, y); ctx.stroke()
+      y += 30
+
+      // 描述（自动换行）
+      ctx.textAlign = 'left'; ctx.font = font(15, '400'); ctx.fillStyle = '#c8d8cc'
+      const lines = wrapText(ctx, levelInfo.desc, W - 192)
+      for (const line of lines) { ctx.fillText(line, 96, y); y += 24 }
+      y += 24
+
+      // 水印
+      ctx.textAlign = 'center'
+      ctx.font = font(13, '400'); ctx.fillStyle = '#4a5e4d'
+      ctx.fillText('dbti.zhexueyuan.com  ·  仅供娱乐  ·  DBTI 镜像测试', MID, H - 52)
+
+      const link = document.createElement('a')
+      link.download = `DBTI-对照-${other.type}vs${self.type}.png`
+      link.href = cv.toDataURL('image/png')
+      link.click()
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath()
+      ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y)
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+      ctx.lineTo(x + w, y + h - r)
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+      ctx.lineTo(x + r, y + h)
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+      ctx.lineTo(x, y + r)
+      ctx.quadraticCurveTo(x, y, x + r, y)
+      ctx.closePath()
+    }
+
+    function wrapText(ctx, text, maxW) {
+      if (!text) return []
+      const lines = []; let line = ''
+      for (const ch of text) {
+        const test = line + ch
+        if (ctx.measureText(test).width > maxW && line) {
+          lines.push(line); line = ch
+        } else { line = test }
+      }
+      if (line) lines.push(line)
+      return lines
+    }
+  </script>
+</body>
+</html>
