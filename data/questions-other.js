@@ -11,12 +11,12 @@ const questionsOther = [
   {
     id: 'other_q01',
     dim: 'S1',
-    text: 'ta 被当面否定后，更常见的反应是：',
+    text: 'ta 发了一条朋友圈，半小时没人点赞，ta 更可能：',
     options: [
-      { label: '当场反驳，据理力争', value: 3 },
-      { label: '表面不在意，回头琢磨半天', value: 2 },
-      { label: '笑笑就过了，懒得争', value: 2 },
-      { label: '明显受伤，但嘴上不说', value: 1 },
+      { label: '删掉？不可能，ta 觉得是你们不配看', value: 3 },
+      { label: '假装没事但偷偷看了八百遍', value: 2 },
+      { label: '默默删了，当这条从未存在过', value: 1 },
+      { label: '无所谓，ta 发朋友圈从来不看赞', value: 2 },
     ],
   },
 
@@ -24,12 +24,12 @@ const questionsOther = [
   {
     id: 'other_q02',
     dim: 'S2',
-    text: 'ta 做重大决定（换工作、分手等）时的风格是：',
+    text: 'ta 打开外卖 App 点餐，更接近哪种状态：',
     options: [
-      { label: '突然宣布已经决定了，谁也拦不住', value: 3 },
-      { label: '跟很多人聊，但最后还是自己拿主意', value: 2 },
-      { label: '反复纠结，今天想这样明天想那样', value: 1 },
-      { label: '别人怎么说就怎么做', value: 1 },
+      { label: '点开就下单，全程不超过30秒，像在执行任务', value: 3 },
+      { label: '在三家店之间反复横跳，最后点了第一家', value: 2 },
+      { label: '问了一圈朋友「你们吃什么」然后跟着点', value: 1 },
+      { label: '翻了半小时，最后决定不吃了', value: 1 },
     ],
   },
 
@@ -37,12 +37,12 @@ const questionsOther = [
   {
     id: 'other_q03',
     dim: 'S3',
-    text: 'ta 花钱的风格更像：',
+    text: '双十一到了，ta 的购物车状态更像：',
     options: [
-      { label: '对自己很舍得，享受型消费不眨眼', value: 3 },
-      { label: '该花花该省省，有自己的优先级', value: 2 },
-      { label: '对别人大方，对自己抠门', value: 2 },
-      { label: '什么都舍不得，除非迫不得已', value: 1 },
+      { label: '早就塞满了，闹钟定好就等零点冲锋', value: 3 },
+      { label: '需要什么买什么，不凑满减不玩花活', value: 2 },
+      { label: '疯狂帮别人砍价助力，自己一件没买', value: 2 },
+      { label: '啥也没买，ta 觉得这都是消费主义陷阱', value: 1 },
     ],
   },
 
@@ -50,12 +50,12 @@ const questionsOther = [
   {
     id: 'other_q04',
     dim: 'E1',
-    text: 'ta 超过半天没回消息时，你觉得更可能是：',
+    text: 'ta 给你发消息你没秒回，两小时后你看到 ta 的状态更像：',
     options: [
-      { label: '真有事，忙完就回', value: 3 },
-      { label: '看到了但晚点回', value: 2 },
-      { label: '不想回', value: 1 },
-      { label: '心情不好在躲人', value: 1 },
+      { label: '完全没事，ta 可能自己都忘了发过消息了', value: 3 },
+      { label: '看到你回了就回，节奏很稳', value: 2 },
+      { label: '发了一个「？」或者一个表情包在试探', value: 1 },
+      { label: '已读不回了，你感觉空气突然安静', value: 1 },
     ],
   },
 
@@ -63,12 +63,12 @@ const questionsOther = [
   {
     id: 'other_q05',
     dim: 'E2',
-    text: 'ta 在关系里更常被人吐槽的是：',
+    text: 'ta 对喜欢的人，更像哪种动物：',
     options: [
-      { label: '太热情了，有时让人有压力', value: 3 },
-      { label: '挺上心的，但不太会表达', value: 2 },
-      { label: '若即若离，忽冷忽热', value: 1 },
-      { label: '好像谁都无所谓', value: 1 },
+      { label: '金毛犬——热情到让人有点招架不住', value: 3 },
+      { label: '猫——在乎你但绝不让你看出来', value: 2 },
+      { label: '变色龙——今天黏你明天消失', value: 1 },
+      { label: '石头——你确定 ta 有感情这个功能？', value: 1 },
     ],
   },
 
@@ -76,12 +76,12 @@ const questionsOther = [
   {
     id: 'other_q06',
     dim: 'E3',
-    text: 'ta 跟最亲近的人闹矛盾后，更常见的状态是：',
+    text: 'ta 和好朋友吵架后，第二天更可能：',
     options: [
-      { label: '当场摊开，不过夜', value: 3 },
-      { label: '冷处理一阵子再主动找', value: 2 },
-      { label: '嘴上说没事，但明显在闹别扭', value: 1 },
-      { label: '直接消失一段时间', value: 1 },
+      { label: '主动发消息，假装昨天什么都没发生', value: 3 },
+      { label: '等对方先开口，但心里已经原谅了', value: 2 },
+      { label: '在朋友圈发一条阴阳怪气的文案', value: 1 },
+      { label: '直接删好友，ta 的世界没有「和好」这个选项', value: 1 },
     ],
   },
 
@@ -89,12 +89,12 @@ const questionsOther = [
   {
     id: 'other_q07',
     dim: 'A1',
-    text: 'ta 聊到社会新闻或热点事件时，更像哪种风格：',
+    text: '看到一条「路人扶老人被讹」的新闻，ta 更可能的反应：',
     options: [
-      { label: '觉得世界还是好人多，总能看到积极面', value: 3 },
-      { label: '理性分析，不太带个人情绪', value: 2 },
-      { label: '动不动就「这个世界就是这样」', value: 1 },
-      { label: '基本不关心，刷到就划走', value: 2 },
+      { label: '「这是个案啦，大部分人还是好的」', value: 3 },
+      { label: '「所以说做好事之前先开录像」', value: 2 },
+      { label: '「这个世界就是这样，你还指望什么」', value: 1 },
+      { label: '直接划走，ta 对新闻免疫了', value: 2 },
     ],
   },
 
@@ -102,12 +102,12 @@ const questionsOther = [
   {
     id: 'other_q08',
     dim: 'A2',
-    text: 'ta 排队时前面有人插队，更可能的反应是：',
+    text: 'ta 走路到了红灯路口，一辆车都没有，ta：',
     options: [
-      { label: '直接说「请排队」', value: 3 },
-      { label: '不说但心里骂半天', value: 2 },
-      { label: '看情况，闹太过分才出声', value: 2 },
-      { label: '无所谓，又不差这几分钟', value: 1 },
+      { label: '坚定地等绿灯，规矩是规矩', value: 3 },
+      { label: '犹豫两秒，看看旁边有没有小孩在看自己', value: 2 },
+      { label: '左右看一眼直接过，效率至上', value: 1 },
+      { label: '看别人走不走，别人走就跟着走', value: 2 },
     ],
   },
 
@@ -115,12 +115,12 @@ const questionsOther = [
   {
     id: 'other_q09',
     dim: 'A3',
-    text: 'ta 提到未来或人生目标时，你的感觉是：',
+    text: '深夜三点 ta 还没睡，更可能是在：',
     options: [
-      { label: 'ta 很清楚自己要什么，而且在行动', value: 3 },
-      { label: '有模糊的方向，但经常变', value: 2 },
-      { label: '嘴上说无所谓，但偶尔能看出 ta 在想', value: 2 },
-      { label: '好像真的不太想这种事', value: 1 },
+      { label: '做工作计划或研究什么新东西', value: 3 },
+      { label: '刷短视频刷到忘记时间了', value: 1 },
+      { label: '躺在床上想「活着到底图啥」', value: 2 },
+      { label: '打游戏或追剧，别问，问就是摆烂', value: 1 },
     ],
   },
 
@@ -128,12 +128,12 @@ const questionsOther = [
   {
     id: 'other_q10',
     dim: 'Ac1',
-    text: '如果要用一个词形容 ta 做事的驱动力：',
+    text: '如果 ta 打游戏，ta 更像：',
     options: [
-      { label: '要赢 / 要证明自己', value: 3 },
-      { label: '好奇心 / 觉得好玩', value: 2 },
-      { label: '责任感 / 不得不做', value: 2 },
-      { label: '没什么特别动力，随缘', value: 1 },
+      { label: '非要赢，输了会分析复盘甚至摔手柄', value: 3 },
+      { label: '主要是好玩，赢了开心输了也开心', value: 2 },
+      { label: '朋友叫才打，自己从来不主动开', value: 2 },
+      { label: '打了两局就切出去刷手机了', value: 1 },
     ],
   },
 
@@ -141,12 +141,12 @@ const questionsOther = [
   {
     id: 'other_q11',
     dim: 'Ac2',
-    text: 'ta 去餐厅点菜的风格是：',
+    text: 'ta 逛商场看中两件衣服拿不定主意，更可能：',
     options: [
-      { label: '打开菜单三秒就决定了', value: 3 },
-      { label: '看一遍菜单，选两三个比一下', value: 2 },
-      { label: '问同行的人「你们点什么」然后跟着选', value: 1 },
-      { label: '翻来覆去犹豫不决，菜上了还在后悔', value: 1 },
+      { label: '两件都买了，别问', value: 3 },
+      { label: '在试衣间反复换了四遍，最后买了先试的那件', value: 2 },
+      { label: '拍照发群里问朋友选哪件', value: 1 },
+      { label: '两件都没买，回家在网上找同款比价', value: 1 },
     ],
   },
 
@@ -154,12 +154,12 @@ const questionsOther = [
   {
     id: 'other_q12',
     dim: 'Ac3',
-    text: 'ta 说「明天开始健身 / 学 XX / 早睡」，你的第一反应是：',
+    text: 'ta 说「我明天开始减肥」，根据你的经验：',
     options: [
-      { label: 'ta 说到做到的概率很高', value: 3 },
-      { label: '大概会做几天然后不了了之', value: 2 },
-      { label: '只是说说，不用当真', value: 1 },
-      { label: 'ta 这句话已经说过很多次了', value: 1 },
+      { label: 'ta 真的会开始，而且能坚持至少一个月', value: 3 },
+      { label: '会开始，但大概一周后回归奶茶', value: 2 },
+      { label: '明天 ta 会说「下周一再开始吧」', value: 1 },
+      { label: '这话 ta 已经说了一年了，你甚至有点想录音做合集', value: 1 },
     ],
   },
 
@@ -167,12 +167,12 @@ const questionsOther = [
   {
     id: 'other_q13',
     dim: 'So1',
-    text: 'ta 在多人聚会中更像：',
+    text: '一场谁都不太认识的聚会上，ta 更像：',
     options: [
-      { label: '全场焦点，到处招呼人', value: 3 },
-      { label: '跟认识的人聊得挺开，不主动认识新人', value: 2 },
-      { label: '安静待着，被搭话才聊', value: 1 },
-      { label: '能不去就不去', value: 1 },
+      { label: '15分钟后已经跟半场人交换了联系方式', value: 3 },
+      { label: '找到一两个聊得来的，站在角落深度对话', value: 2 },
+      { label: '全程低头玩手机，偶尔抬头微笑一下', value: 1 },
+      { label: 'ta 根本不会出现在这种场合', value: 1 },
     ],
   },
 
@@ -180,12 +180,12 @@ const questionsOther = [
   {
     id: 'other_q14',
     dim: 'So2',
-    text: 'ta 被别人打探隐私时：',
+    text: '有人问 ta「你一个月挣多少钱」，ta 更可能：',
     options: [
-      { label: '礼貌但坚定地拒绝回答', value: 3 },
-      { label: '模糊带过，不正面回应', value: 2 },
-      { label: '虽然不太想说但还是说了', value: 1 },
-      { label: '完全不在意，什么都可以聊', value: 2 },
+      { label: '优雅地把话题岔开，绝不接招', value: 3 },
+      { label: '「还行吧」「够用」模糊到极致', value: 2 },
+      { label: '犹豫了一下还是说了，事后后悔', value: 1 },
+      { label: '大大方方说出来，ta 觉得这有什么好藏的', value: 2 },
     ],
   },
 
@@ -193,12 +193,12 @@ const questionsOther = [
   {
     id: 'other_q15',
     dim: 'So3',
-    text: '你觉得 ta 在社交场合展现的样子和私下差别大吗：',
+    text: 'ta 在公司群和在朋友群里，像同一个人吗：',
     options: [
-      { label: '几乎没差别，ta 什么场合都是那个样', value: 3 },
-      { label: '有一些调整，但大体一致', value: 2 },
-      { label: '差挺多的，像两个人', value: 1 },
-      { label: '我也不确定哪个是真的 ta', value: 1 },
+      { label: '完全一样，ta 没有切换模式这个功能', value: 3 },
+      { label: '差不多，就是公司群少发表情包', value: 2 },
+      { label: '完全是两个人，你有时怀疑 ta 有双重人格', value: 1 },
+      { label: 'ta 在公司群从来不说话', value: 1 },
     ],
   },
 
@@ -208,12 +208,12 @@ const questionsOther = [
   {
     id: 'other_q16',
     dim: 'S1',
-    text: 'ta 在一群人中做了件蠢事，之后更可能：',
+    text: '有人当面说「你这个想法不太行」，ta 的反应更像：',
     options: [
-      { label: '带头把这事变成段子讲，比谁都能笑', value: 3 },
-      { label: '嘴上假装没事，但回去会默默回放一遍', value: 2 },
-      { label: '低调很久，恨不得没人记得', value: 1 },
-      { label: '当场脸红，之后连那个群也不太想进了', value: 1 },
+      { label: '直接回一句「你行你上」', value: 3 },
+      { label: '微笑说「嗯你说得对」然后继续按自己的来', value: 3 },
+      { label: '嘴上说好好好，心里难受一整天', value: 1 },
+      { label: '认真想想对方说得有没有道理', value: 2 },
     ],
   },
 
@@ -221,12 +221,12 @@ const questionsOther = [
   {
     id: 'other_q17',
     dim: 'S2',
-    text: '以你对 ta 的了解，ta 对自己的评价准不准：',
+    text: 'ta 人生的 slogan 更像哪句：',
     options: [
-      { label: '非常准，ta 很了解自己，甚至有点坦然', value: 3 },
-      { label: '大致准，但对某些缺点明显有盲区', value: 2 },
-      { label: '时准时不准，状态好不好影响很大', value: 1 },
-      { label: '感觉 ta 的自我认知跟我看到的差挺多', value: 1 },
+      { label: '「我知道我要什么，别废话」', value: 3 },
+      { label: '「让我想想……再让我想想……」', value: 1 },
+      { label: '「大家觉得怎样就怎样吧」', value: 1 },
+      { label: '「我有方向，但 GPS 偶尔会重新规划路线」', value: 2 },
     ],
   },
 
@@ -234,12 +234,12 @@ const questionsOther = [
   {
     id: 'other_q18',
     dim: 'S3',
-    text: 'ta 遇到一件「做了值得，不做也无所谓」的事，更可能：',
+    text: 'ta 请你吃饭时，更接近哪种画风：',
     options: [
-      { label: '去做，觉得值得就干，不留遗憾', value: 3 },
-      { label: '看心情，状态好就去，状态差就算了', value: 2 },
-      { label: '大概率不去，懒得折腾', value: 1 },
-      { label: '问一圈有没有人一起，没人陪就不去', value: 2 },
+      { label: '大手一挥「随便点」，菜单都不看一眼', value: 3 },
+      { label: '认真点菜控预算，吃完还研究一下人均', value: 2 },
+      { label: '请完你之后默默吃了一周泡面', value: 2 },
+      { label: 'ta 从来不请人吃饭，你在想什么', value: 1 },
     ],
   },
 
@@ -247,12 +247,12 @@ const questionsOther = [
   {
     id: 'other_q19',
     dim: 'E1',
-    text: '你知道 ta 最近跟某个 ta 不熟的人走得比较近，ta 的反应更可能是：',
+    text: 'ta 对待「已读不回」这件事，态度更像：',
     options: [
-      { label: '完全不在意，信任为主，不会多想', value: 3 },
-      { label: '好奇问一嘴，不会上纲上线', value: 2 },
-      { label: '表面没表示，但你能感觉到微妙的变化', value: 1 },
-      { label: '会明显表现出不舒服，或者反复追问', value: 1 },
+      { label: '「有什么大不了的，忙呗」', value: 3 },
+      { label: '「行吧，可能真有事」嘴上这么说但还是记住了', value: 2 },
+      { label: '立刻开始分析「是不是我说错什么了」', value: 1 },
+      { label: '直接打电话过去：「你是不是死了」', value: 2 },
     ],
   },
 
@@ -260,12 +260,12 @@ const questionsOther = [
   {
     id: 'other_q20',
     dim: 'E2',
-    text: '你们关系最近有些冷淡，ta 更可能：',
+    text: 'ta 记不记得你的生日：',
     options: [
-      { label: '主动说「感觉我们最近联系少了」', value: 3 },
-      { label: '用行动弥补，比如约出来或发些有的没的', value: 2 },
-      { label: '等你先动，ta 不会主动提', value: 1 },
-      { label: '好像根本没意识到有什么变化', value: 1 },
+      { label: '不仅记得，还会提前一周开始策划惊喜', value: 3 },
+      { label: '记得，会发条祝福但不太搞大阵仗', value: 2 },
+      { label: '想起来就祝一下，想不起来也正常', value: 1 },
+      { label: 'ta 连自己生日都记不住你指望什么', value: 1 },
     ],
   },
 
@@ -273,12 +273,12 @@ const questionsOther = [
   {
     id: 'other_q21',
     dim: 'E3',
-    text: 'ta 一个人独处或独自旅行的频率，大概是：',
+    text: 'ta 搬新家或换新手机，更可能：',
     options: [
-      { label: '很少，喜欢和人在一起，独处会不舒服', value: 1 },
-      { label: '偶尔，需要充电但不多', value: 2 },
-      { label: '比较频繁，独处是刚需，不然会烦', value: 3 },
-      { label: '没规律，有机会就去，没有也无所谓', value: 2 },
+      { label: '自己搞定一切，你事后才知道', value: 3 },
+      { label: '叫上你一起，但核心决策自己做', value: 2 },
+      { label: '全程需要人陪，没人陪就瘫痪', value: 1 },
+      { label: '发一条朋友圈问「有没有人帮我」', value: 1 },
     ],
   },
 
@@ -286,12 +286,12 @@ const questionsOther = [
   {
     id: 'other_q22',
     dim: 'A1',
-    text: 'ta 去陌生城市需要向路人问路，ta 更可能：',
+    text: 'ta 对「努力就能成功」这句话的态度：',
     options: [
-      { label: '直接问，觉得大部分人都愿意帮忙', value: 3 },
-      { label: '先观察一下这个人靠不靠谱再决定', value: 2 },
-      { label: '宁可自己找，不想麻烦别人也不想被坑', value: 1 },
-      { label: '直接看手机导航，不找人问', value: 2 },
+      { label: '深信不疑，而且身体力行', value: 3 },
+      { label: '「有道理，但还要看运气和出身」', value: 2 },
+      { label: '「哈哈哈哈哈哈哈哈」', value: 1 },
+      { label: '已读，不评价', value: 2 },
     ],
   },
 
@@ -299,12 +299,12 @@ const questionsOther = [
   {
     id: 'other_q23',
     dim: 'A2',
-    text: 'ta 参加一个「需要在规定时间段内签到」的活动，ta 更可能：',
+    text: 'ta 在电影院遇到有人大声打电话，更可能：',
     options: [
-      { label: '提前到，绝对不踩点，就怕出意外', value: 3 },
-      { label: '基本准时，偶尔晚个几分钟', value: 2 },
-      { label: '能应付就行，规则是参考不是命令', value: 1 },
-      { label: '到了就到了，没到也懒得解释', value: 1 },
+      { label: '直接回头说「请安静」', value: 3 },
+      { label: '狂转头用眼神杀表达不满', value: 2 },
+      { label: '忍着，但在心里已经写好了投诉小作文', value: 2 },
+      { label: '戴上耳机，与世隔绝，这不是 ta 的战斗', value: 1 },
     ],
   },
 
@@ -312,12 +312,12 @@ const questionsOther = [
   {
     id: 'other_q24',
     dim: 'A3',
-    text: '在你们聊天里，ta 主动提「想做某件事/某个目标」的频率：',
+    text: 'ta 的五年计划状态：',
     options: [
-      { label: '经常，ta 总有新想法，而且在推进', value: 3 },
-      { label: '偶尔，大部分时候聊的是当下的事', value: 2 },
-      { label: '很少，ta 更多在聊眼前有什么', value: 1 },
-      { label: '基本没有，ta 好像不太想未来的事', value: 1 },
+      { label: '写在备忘录里，还定期复盘更新', value: 3 },
+      { label: '有个大概方向，但没写下来过', value: 2 },
+      { label: '五年？ta 连下周干嘛都不确定', value: 1 },
+      { label: 'ta 的计划就是活到明天看明天的', value: 1 },
     ],
   },
 
@@ -325,12 +325,12 @@ const questionsOther = [
   {
     id: 'other_q25',
     dim: 'Ac1',
-    text: 'ta 做一件事失败了，更可能的反应是：',
+    text: '如果有人说「这件事做不到」，ta 更可能的反应：',
     options: [
-      { label: '分析哪里出了问题，准备重来', value: 3 },
-      { label: '失落一阵，但最终能想开、继续', value: 2 },
-      { label: '安慰自己「本来也没那么想要」', value: 1 },
-      { label: '直接放弃，不想再提这件事', value: 1 },
+      { label: '「你说做不到？那我偏要做给你看」', value: 3 },
+      { label: '「为什么做不到？我研究一下」', value: 2 },
+      { label: '「做不到就做不到呗，又不是非做不可」', value: 1 },
+      { label: '「好的那算了」然后去做别的事了', value: 1 },
     ],
   },
 
@@ -338,12 +338,12 @@ const questionsOther = [
   {
     id: 'other_q26',
     dim: 'Ac2',
-    text: '你们要一起选旅行目的地，ta 更可能：',
+    text: '旅行时到了一个路口，地图说左边近但右边风景好，ta：',
     options: [
-      { label: '5 分钟内拍板，直接说「就去这」', value: 3 },
-      { label: '搜一下攻略，列几个选项让大家投票', value: 2 },
-      { label: '说「我都行，你们定」然后跟着走', value: 1 },
-      { label: '选了又觉得不好，反复改了好几次', value: 1 },
+      { label: '三秒内选完，不回头', value: 3 },
+      { label: '选了一条，走两步犹豫一下，然后继续走', value: 2 },
+      { label: '「你们决定吧我都行」', value: 1 },
+      { label: '在路口站了五分钟查攻略看评论', value: 2 },
     ],
   },
 
@@ -351,12 +351,12 @@ const questionsOther = [
   {
     id: 'other_q27',
     dim: 'Ac3',
-    text: 'ta 手头有个没做完的任务，ta 面对它的状态通常是：',
+    text: 'ta 答应帮你做一件事，通常的结果是：',
     options: [
-      { label: '不做完心里不踏实，会一直惦记', value: 3 },
-      { label: '有时积极有时拖，看当天状态', value: 2 },
-      { label: '明知道要做，但能拖就拖', value: 1 },
-      { label: '找各种理由先做别的，那个任务？以后再说', value: 1 },
+      { label: '说到做到，有时候比你预期的还快', value: 3 },
+      { label: '会做，但需要你催一两次', value: 2 },
+      { label: '做了，但质量堪忧，你后悔没自己来', value: 1 },
+      { label: '你等到花都谢了，ta 说「啊我忘了」', value: 1 },
     ],
   },
 
@@ -364,12 +364,12 @@ const questionsOther = [
   {
     id: 'other_q28',
     dim: 'So1',
-    text: '你们第一次认识时，是怎么开始的：',
+    text: 'ta 的微信消息提示音响了，ta 的反应：',
     options: [
-      { label: 'ta 主动来搭话的', value: 3 },
-      { label: '我搭 ta 的，但 ta 很快就接上了', value: 2 },
-      { label: '被人介绍的，ta 不太主动', value: 1 },
-      { label: '一起的场合自然就认识了，谁也没特别主动', value: 1 },
+      { label: '秒回，而且经常是语音+表情包+文字三连', value: 3 },
+      { label: '看心情，有空就回，没空就先搁着', value: 2 },
+      { label: '设置了免打扰，统一晚上回', value: 1 },
+      { label: 'ta 把消息提示关了，你能收到回复算幸运', value: 1 },
     ],
   },
 
@@ -377,12 +377,12 @@ const questionsOther = [
   {
     id: 'other_q29',
     dim: 'So2',
-    text: 'ta 跟认识不久的人聊天，会主动聊到私人话题吗：',
+    text: 'ta 的手机解锁密码，你觉得知道的人有几个：',
     options: [
-      { label: '基本不会，刚认识就还是聊表面的', value: 3 },
-      { label: '看对方，对方开放 ta 也会适度分享', value: 2 },
-      { label: '比较容易放开，不太介意跟新认识的人聊私事', value: 1 },
-      { label: '话匣子一开就停不住，根本不管认不认识', value: 1 },
+      { label: '零个，ta 把手机保护得像国家机密', value: 3 },
+      { label: '最亲的一两个人知道', value: 2 },
+      { label: '好多人都知道，ta 自己都没意识到', value: 1 },
+      { label: 'ta 根本没设密码，ta 觉得自己没什么好藏的', value: 2 },
     ],
   },
 
@@ -390,12 +390,12 @@ const questionsOther = [
   {
     id: 'other_q30',
     dim: 'So3',
-    text: 'ta 在不同圈子（家人 / 同事 / 死党 / 网上）里的状态：',
+    text: '你觉得 ta 在你面前展示的自己，大概占真实的 ta 百分之多少：',
     options: [
-      { label: '大体一致，基本上那就是 ta', value: 3 },
-      { label: '有点差别，但核心的样子没变', value: 2 },
-      { label: '差别挺明显，对不同人像不同版本', value: 1 },
-      { label: '完全不同，搞不清楚哪个才是真实的 ta', value: 1 },
+      { label: '90% 以上，ta 在谁面前都差不多', value: 3 },
+      { label: '70% 左右，有些东西 ta 不说但你知道', value: 2 },
+      { label: '50% 吧，ta 在不同人面前差异挺大的', value: 1 },
+      { label: '你也不确定，也许你看到的都是 ta 想让你看到的', value: 1 },
     ],
   },
 ]
