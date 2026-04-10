@@ -292,7 +292,7 @@
             <span class="invite-link-text" id="invite-link-text"></span>
             <button class="btn-copy-invite" id="btn-copy-invite">复制</button>
           </div>
-          <p class="invite-hint">ta 完成自测后，回到这里就能看到你们的认知偏差报告（task05 开发中）</p>
+          <p class="invite-hint">ta 打开链接完成自测后，即可直接看到认知偏差报告。ta 也可以把对照链接发回给你查看。</p>
         </div>
 
         <div class="layer-sep"></div>
@@ -329,7 +329,16 @@
         const sessionId = Math.random().toString(36).slice(2, 10).toUpperCase()
         localStorage.setItem('dbti_session_' + sessionId, raw)
 
-        const link = `https://dbti.zhexueyuan.com/self-test.html?invite=${sessionId}`
+        // 把他测核心数据编码进 URL，支持跨设备对照
+        const params = new URLSearchParams({
+          d:      data.levels,
+          t:      data.type,
+          r:      data.relation || '',
+          n:      data.nickname,
+          tn:     data.typeCn,
+          invite: sessionId,
+        })
+        const link = `https://dbti.zhexueyuan.com/self-test.html?${params}`
         document.getElementById('invite-link-text').textContent = link
         document.getElementById('invite-result').classList.add('show')
         document.getElementById('btn-invite').style.display = 'none'

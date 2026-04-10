@@ -184,26 +184,57 @@
     import { deviationLevels, dimensionGapQuotes } from '/data/gap-quotes.js'
 
     // ===== 读取参数和数据 =====
-    const id       = new URLSearchParams(window.location.search).get('id') || ''
-    const card     = document.getElementById('compare-card')
+    const urlParams = new URLSearchParams(window.location.search)
+    const card      = document.getElementById('compare-card')
 
-    const otherRaw = id ? localStorage.getItem('dbti_session_' + id)        : null
-    const selfRaw  = id ? localStorage.getItem('dbti_session_' + id + '_self') : null
+    const LEVEL_NUM = { L: 1, M: 2, H: 3 }
+    function levelsToVector(s) { return (s || '').split('').map(c => LEVEL_NUM[c] || 2) }
 
-    if (!id || !otherRaw || !selfRaw) {
+    let other    = null
+    let selfData = null
+
+    const dParam  = urlParams.get('d')
+    const sdParam = urlParams.get('sd')
+
+    if (dParam && sdParam) {
+      // 跨设备：从 URL 参数重建数据
+      other = {
+        type:     urlParams.get('t')  || '',
+        typeCn:   urlParams.get('tn') || '',
+        nickname: urlParams.get('n')  || 'ta',
+        relation: urlParams.get('r')  || '',
+        levels:   dParam,
+        vector:   levelsToVector(dParam),
+      }
+      selfData = {
+        type:   urlParams.get('st')  || '',
+        typeCn: urlParams.get('stn') || '',
+        levels: sdParam,
+        vector: levelsToVector(sdParam),
+      }
+    } else {
+      // 同设备 fallback：从 localStorage 读
+      const id = urlParams.get('id') || ''
+      if (id) {
+        const otherRaw = localStorage.getItem('dbti_session_' + id)
+        const selfRaw  = localStorage.getItem('dbti_session_' + id + '_self')
+        if (otherRaw) other    = JSON.parse(otherRaw)
+        if (selfRaw)  selfData = JSON.parse(selfRaw)
+      }
+    }
+
+    if (!other || !selfData) {
       card.innerHTML = `
         <div class="error-card">
           <h2>对照数据不完整</h2>
-          <p>可能 ta 还没有完成自测，或者数据保存在另一台设备上。<br/>
-             请确认 ta 通过你发送的邀请链接完成了测试，且在同一浏览器。</p>
+          <p>可能 ta 还没有完成自测，或链接已失效。<br/>
+             请通过他测结果页重新生成邀请链接。</p>
           <a href="/" class="btn btn-primary" style="display:inline-block;">返回首页</a>
         </div>`
     } else {
-      const other = JSON.parse(otherRaw)   // 他测方的数据（你眼中的 ta）
-      const self  = JSON.parse(selfRaw)    // 自测方的数据（ta 自己的）
 
       const { deviationPercent, dimensionDiffs, level } =
-        calculateDeviation(other.vector, self.vector)
+        calculateDeviation(other.vector, selfData.vector)
 
       const levelInfo = deviationLevels[level]
 
@@ -243,8 +274,8 @@
           </div>
           <div class="type-box self">
             <div class="type-box-label">${other.nickname} 自测</div>
-            <div class="type-box-code">${self.type}</div>
-            <div class="type-box-cn">${self.typeCn}</div>
+            <div class="type-box-code">${selfData.type}</div>
+            <div class="type-box-cn">${selfData.typeCn}</div>
           </div>
         </div>
 
@@ -292,11 +323,11 @@
 
       // ===== 绘制双线雷达图 =====
       const canvas = document.getElementById('dual-radar')
-      drawDualRadar(canvas, other.vector, self.vector, dimOrder)
+      drawDualRadar(canvas, other.vector, selfData.vector, dimOrder)
 
       // ===== 分享卡 =====
       document.getElementById('btn-share').addEventListener('click', () => {
-        generateCompareCard(other, self, deviationPercent, levelInfo)
+        generateCompareCard(other, selfData, deviationPercent, levelInfo)
       })
     }
 
