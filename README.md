@@ -138,6 +138,8 @@ npm run build
 
 Fork 本项目后，在 Settings → Pages → Source 选择 GitHub Actions 即可自动部署。
 
+当前仓库名为 `SBTI-DBTI` 时，默认 GitHub Pages 地址可使用 `https://dunwood.github.io/SBTI-DBTI/`。如绑定自定义域名 `dbti.zhexueyuan.com`，则可直接使用 `https://dbti.zhexueyuan.com/`。
+
 ### Vercel / Netlify
 
 直接连接 GitHub 仓库，零配置自动识别 Vite 项目。
