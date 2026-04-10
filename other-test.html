@@ -4,43 +4,336 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DBTI · 我眼中的 ta</title>
+  <meta name="description" content="选一个关系，替 ta 答 30 道题，看看你眼中的 ta 是什么人格。" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+  <link rel="stylesheet" href="/src/style.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-      background: #141c18;
-      color: #e8f0ea;
-      min-height: 100dvh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
+    /* ===== 关系选择页额外样式 ===== */
+    .relation-intro {
       text-align: center;
+      margin-bottom: 28px;
     }
-    .container { max-width: 400px; }
-    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 16px; }
-    p { color: #8fa893; font-size: 1rem; line-height: 1.7; margin-bottom: 32px; }
-    a {
-      display: inline-block;
-      background: #1e2a22;
-      border: 1.5px solid #2e3d32;
-      color: #8fa893;
-      text-decoration: none;
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+    .relation-intro h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .relation-intro .sub {
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+    .relation-intro .notice {
+      color: var(--text-secondary);
+      font-size: 0.78rem;
+      opacity: 0.7;
+    }
+
+    .relation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    @media (min-width: 400px) {
+      .relation-grid { grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .btn-relation {
+      padding: 14px 10px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      background: var(--card-bg);
+      color: var(--text);
+      font-size: 0.88rem;
       font-weight: 600;
-      transition: border-color 0.2s;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.18s;
+      font-family: var(--font);
+      line-height: 1.4;
     }
-    a:hover { border-color: #5a8a62; color: #e8f0ea; }
+    .btn-relation:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+    .btn-relation.selected {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    /* 代号输入区 */
+    .nickname-section {
+      display: none;
+      margin-bottom: 24px;
+      animation: fadeIn 0.25s ease;
+    }
+    .nickname-section.show { display: block; }
+    .nickname-label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+    .nickname-input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: var(--font);
+      color: var(--text);
+      background: var(--card-bg);
+      outline: none;
+      transition: border-color 0.18s;
+    }
+    .nickname-input:focus { border-color: var(--accent); }
+
+    /* 答题页：顶部提示 */
+    .quiz-for {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      font-weight: 500;
+    }
+    .quiz-for strong {
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    /* 返回首页链接 */
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent); }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>我眼中的 ta</h1>
-    <p>他测模式开发中，敬请期待。<br/>届时你可以用自己的视角为 ta 做一份人格镜像。</p>
-    <a href="/">← 返回首页</a>
+  <div id="app">
+
+    <!-- 关系选择页 -->
+    <section id="page-relation" class="page active">
+      <div class="card" style="padding: 36px 24px;">
+        <div class="relation-intro">
+          <h1>你眼中的 ta 是什么人</h1>
+          <p class="sub">选一个关系，替 ta 答 30 道题</p>
+          <p class="notice">这是你视角下的 ta，不代表 ta 本人，仅供娱乐</p>
+        </div>
+
+        <div class="relation-grid" id="relation-grid">
+          <button class="btn-relation" data-relation="friend" data-default="我朋友">我眼中的<br/>朋友</button>
+          <button class="btn-relation" data-relation="crush" data-default="某暧昧对象">我眼中的<br/>暧昧对象</button>
+          <button class="btn-relation" data-relation="ex" data-default="某前任">我眼中的<br/>前任</button>
+          <button class="btn-relation" data-relation="partner" data-default="我对象">我眼中的<br/>现任</button>
+          <button class="btn-relation" data-relation="colleague" data-default="我同事">我眼中的<br/>同事</button>
+          <button class="btn-relation" data-relation="boss" data-default="我老板">我眼中的<br/>老板</button>
+          <button class="btn-relation" data-relation="roommate" data-default="我室友">我眼中的<br/>室友</button>
+        </div>
+
+        <div class="nickname-section" id="nickname-section">
+          <label class="nickname-label" for="nickname-input">给 ta 起个代号（可选）</label>
+          <input
+            type="text"
+            id="nickname-input"
+            class="nickname-input"
+            maxlength="20"
+            placeholder="最多 20 字"
+          />
+        </div>
+
+        <button id="btn-start-other" class="btn btn-primary" style="width:100%; display:none;">
+          开始替 ta 答题
+        </button>
+
+        <a href="/" class="back-link">← 返回首页</a>
+      </div>
+    </section>
+
+    <!-- 答题页 -->
+    <section id="page-quiz" class="page">
+      <div class="card quiz-card">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-text" id="progress-text">0 / 30</div>
+        <p class="quiz-for">你眼中的 <strong id="quiz-nickname-label"></strong></p>
+        <div class="question-area">
+          <p class="question-text" id="question-text"></p>
+        </div>
+        <div class="options" id="options"></div>
+      </div>
+    </section>
+
   </div>
+
+  <script type="module">
+    import { calcDimensionScores, scoresToLevels, determineResult } from '/src/engine.js'
+    import questionsOther from '/data/questions-other.js'
+
+    // ========== 工具函数 ==========
+    function shuffle(arr) {
+      const a = [...arr]
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]]
+      }
+      return a
+    }
+
+    async function loadJSON(path) {
+      const res = await fetch(path)
+      return res.json()
+    }
+
+    // ========== 加载数据 ==========
+    const [dimensions, types, config] = await Promise.all([
+      loadJSON('/data/dimensions.json'),
+      loadJSON('/data/types.json'),
+      loadJSON('/data/config.json'),
+    ])
+
+    // ========== 页面切换 ==========
+    const pages = {
+      relation: document.getElementById('page-relation'),
+      quiz: document.getElementById('page-quiz'),
+    }
+    function showPage(name) {
+      Object.values(pages).forEach(p => p.classList.remove('active'))
+      pages[name].classList.add('active')
+      window.scrollTo(0, 0)
+    }
+
+    // ========== 关系选择逻辑 ==========
+    let selectedRelation = null
+    let selectedDefault = ''
+
+    const relationGrid = document.getElementById('relation-grid')
+    const nicknameSection = document.getElementById('nickname-section')
+    const nicknameInput = document.getElementById('nickname-input')
+    const btnStartOther = document.getElementById('btn-start-other')
+
+    relationGrid.addEventListener('click', (e) => {
+      const btn = e.target.closest('.btn-relation')
+      if (!btn) return
+
+      // 取消其他选中
+      relationGrid.querySelectorAll('.btn-relation').forEach(b => b.classList.remove('selected'))
+      btn.classList.add('selected')
+
+      selectedRelation = btn.dataset.relation
+      selectedDefault = btn.dataset.default
+
+      // 显示代号输入框
+      nicknameInput.value = selectedDefault
+      nicknameSection.classList.add('show')
+      btnStartOther.style.display = 'block'
+    })
+
+    // ========== 答题逻辑 ==========
+    let queue = []
+    let current = 0
+    let answers = {}
+
+    const els = {
+      fill: document.getElementById('progress-fill'),
+      text: document.getElementById('progress-text'),
+      qText: document.getElementById('question-text'),
+      options: document.getElementById('options'),
+      nicknameLabel: document.getElementById('quiz-nickname-label'),
+    }
+
+    function updateProgress() {
+      const pct = (current / queue.length) * 100
+      els.fill.style.width = pct + '%'
+      els.text.textContent = `${current} / ${queue.length}`
+    }
+
+    function renderQuestion() {
+      const q = queue[current]
+      els.qText.textContent = q.text
+      els.options.innerHTML = ''
+      q.options.forEach(opt => {
+        const btn = document.createElement('button')
+        btn.className = 'btn btn-option'
+        btn.textContent = opt.label
+        btn.addEventListener('click', () => selectOption(q, opt))
+        els.options.appendChild(btn)
+      })
+      updateProgress()
+    }
+
+    function selectOption(question, option) {
+      answers[question.id] = option.value
+      current++
+      if (current >= queue.length) {
+        finishQuiz()
+      } else {
+        renderQuestion()
+      }
+    }
+
+    function finishQuiz() {
+      // 算分，复用原版引擎
+      const scores = calcDimensionScores(answers, questionsOther)
+      const levels = scoresToLevels(scores, config.scoring.levelThresholds)
+      const result = determineResult(
+        levels,
+        dimensions.order,
+        types.standard,
+        types.special,
+        { isDrunk: false }
+      )
+
+      // 15 维向量（数值化）
+      const LEVEL_NUM = { L: 1, M: 2, H: 3 }
+      const vector = dimensions.order.map(d => LEVEL_NUM[levels[d]] || 2)
+      const levelsStr = dimensions.order.map(d => levels[d] || 'M').join('')
+
+      const nickname = nicknameInput.value.trim() || selectedDefault
+
+      // 存入 localStorage
+      localStorage.setItem('dbti_other_result', JSON.stringify({
+        relation: selectedRelation,
+        nickname,
+        vector,
+        levels: levelsStr,
+        type: result.primary.code,
+        typeCn: result.primary.cn,
+        similarity: result.primary.similarity,
+        rankings: result.rankings.slice(0, 5).map(t => ({
+          code: t.code,
+          cn: t.cn,
+          similarity: t.similarity,
+        })),
+        timestamp: Date.now(),
+      }))
+
+      // 跳转到临时结果页
+      window.location.href = '/result-other.html'
+    }
+
+    // ========== 启动按钮 ==========
+    btnStartOther.addEventListener('click', () => {
+      if (!selectedRelation) return
+      const nickname = nicknameInput.value.trim() || selectedDefault
+      els.nicknameLabel.textContent = nickname
+
+      // 洗牌题目
+      queue = shuffle(questionsOther)
+      current = 0
+      answers = {}
+
+      showPage('quiz')
+      renderQuestion()
+    })
+  </script>
 </body>
 </html>

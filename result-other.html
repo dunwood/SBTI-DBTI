@@ -5,42 +5,153 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DBTI · 他测结果</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
+  <link rel="stylesheet" href="/src/style.css" />
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-      background: #141c18;
-      color: #e8f0ea;
-      min-height: 100dvh;
+    .result-other-card {
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .kicker {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .type-code {
+      font-size: 2.8rem;
+      font-weight: 900;
+      color: var(--accent);
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+    .type-cn {
+      font-size: 1.3rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .similarity-badge {
+      display: inline-block;
+      background: var(--accent-light);
+      color: var(--accent);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+    }
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 24px 0;
+    }
+    .top5-title {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .top-item {
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 24px 16px;
-      text-align: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
     }
-    .container { max-width: 400px; }
-    h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 16px; }
-    p { color: #8fa893; font-size: 1rem; line-height: 1.7; margin-bottom: 32px; }
-    a {
-      display: inline-block;
-      background: #1e2a22;
-      border: 1.5px solid #2e3d32;
-      color: #8fa893;
-      text-decoration: none;
-      padding: 12px 28px;
+    .top-item:last-child { border-bottom: none; }
+    .top-rank { color: var(--text-secondary); font-size: 0.8rem; width: 24px; }
+    .top-code { font-weight: 700; color: var(--accent); flex: 0 0 80px; }
+    .top-name { flex: 1; color: var(--text); }
+    .top-sim { color: var(--text-secondary); font-size: 0.82rem; }
+
+    .coming-soon-note {
+      background: var(--accent-light);
       border-radius: 8px;
-      font-size: 0.95rem;
-      font-weight: 600;
-      transition: border-color 0.2s;
+      padding: 12px 16px;
+      font-size: 0.82rem;
+      color: var(--accent);
+      margin: 20px 0;
+      text-align: left;
+      line-height: 1.6;
     }
-    a:hover { border-color: #5a8a62; color: #e8f0ea; }
+
+    .action-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .action-group a, .action-group button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .error-card {
+      text-align: center;
+      padding: 40px 24px;
+    }
+    .error-card h2 { margin-bottom: 12px; }
+    .error-card p { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 24px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>他测结果</h1>
-    <p>他测结果页开发中，敬请期待。</p>
-    <a href="/">← 返回首页</a>
+  <div id="app">
+    <section class="page active">
+      <div class="card result-other-card" id="result-card">
+        <!-- 由 JS 填充 -->
+      </div>
+    </section>
   </div>
+
+  <script>
+    const card = document.getElementById('result-card')
+
+    const raw = localStorage.getItem('dbti_other_result')
+    if (!raw) {
+      card.innerHTML = `
+        <div class="error-card">
+          <h2>没有找到测试结果</h2>
+          <p>请先完成他测答题流程。</p>
+          <a href="/other-test.html" class="btn btn-primary" style="display:inline-block;">去测试</a>
+        </div>
+      `
+    } else {
+      const data = JSON.parse(raw)
+      const top5HTML = (data.rankings || []).map((t, i) => `
+        <div class="top-item">
+          <span class="top-rank">#${i + 1}</span>
+          <span class="top-code">${t.code}</span>
+          <span class="top-name">${t.cn}</span>
+          <span class="top-sim">${t.similarity}%</span>
+        </div>
+      `).join('')
+
+      card.innerHTML = `
+        <p class="kicker">你眼中的「${data.nickname}」</p>
+        <div class="type-code">${data.type}</div>
+        <div class="type-cn">${data.typeCn}</div>
+        <div class="similarity-badge">匹配度 ${data.similarity}%</div>
+
+        <div class="divider"></div>
+
+        <div class="top5-title">最佳匹配 TOP 5</div>
+        ${top5HTML}
+
+        <div class="coming-soon-note">
+          完整结果页（维度雷达图 + 人格详细描述 + 与自测的对比）正在开发中，敬请期待。
+        </div>
+
+        <div class="action-group">
+          <a href="/other-test.html" class="btn btn-primary">再测一个 ta</a>
+          <a href="/self-test.html" class="btn btn-secondary">测测我自己</a>
+          <a href="/" class="btn btn-secondary">返回首页</a>
+        </div>
+      `
+    }
+  </script>
 </body>
 </html>
