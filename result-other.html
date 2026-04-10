@@ -421,7 +421,7 @@
 
       // 各区块固定高度估算（不含动态文字行）
       // 区块1 header：标签+代号+TYPE+中文名+匹配度
-      const H1 = 30 + 36 + 88 + 44 + 30  // = 228
+      const H1 = 38 + 80 + 56 + 36 + 32  // = 242
       // 区块2 desc：动态行
       const H2 = descLines.length * 30
       // 区块3 style：标题+名称+标语+desc动态行
@@ -446,21 +446,29 @@
       // ===== 区块1：人格头部（居中）=====
       ctx.textAlign = 'center'
 
+      // 各行 y 值基于 Canvas baseline 语义计算：
+      // baseline 在 y，ascender ≈ fontSize*0.75 在 y 上方，descender ≈ fontSize*0.25 在 y 下方
+      // 下一行 baseline = 当前行 bottom + gap + 下一行 ascender
+
       ctx.font = font(15, '500'); ctx.fillStyle = '#8fa893'
-      ctx.fillText('你眼中的', MID, y); y += 30
+      ctx.fillText('你眼中的', MID, y)
+      y += 38   // bottom≈y+4, gap=14, next ascender=20（font24）→ 38
 
       ctx.font = font(24, '700'); ctx.fillStyle = '#e8f0ea'
-      ctx.fillText(`「${data.nickname}」`, MID, y); y += 36
+      ctx.fillText(`「${data.nickname}」`, MID, y)
+      y += 80   // bottom≈y+6, gap=20, next ascender=54（font72）→ 80
 
-      // TYPE CODE：baseline 在 y，字体 72px，advance = 72×1.2 ≈ 88
       ctx.font = font(72, '900'); ctx.fillStyle = '#5a8a62'
-      ctx.fillText(data.type, MID, y); y += 88
+      ctx.fillText(data.type, MID, y)
+      y += 56   // bottom≈y+18, gap=14, next ascender=24（font30）→ 56（视觉留白适中）
 
       ctx.font = font(30, '700'); ctx.fillStyle = '#e8f0ea'
-      ctx.fillText(data.typeCn, MID, y); y += 44
+      ctx.fillText(data.typeCn, MID, y)
+      y += 36   // bottom≈y+8, gap=15, next ascender=13（font17）→ 36
 
       ctx.font = font(17, '500'); ctx.fillStyle = '#8fa893'
-      ctx.fillText(`匹配度 ${data.similarity}%`, MID, y); y += 30
+      ctx.fillText(`匹配度 ${data.similarity}%`, MID, y)
+      y += 32   // 匹配度底部到分割线的间距
 
       // 分割线1
       y += Math.floor(SEP_H * 0.4)
