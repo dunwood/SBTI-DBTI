@@ -7,81 +7,151 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
   <link rel="stylesheet" href="/src/style.css" />
   <style>
-    .result-other-card {
-      text-align: center;
-      padding: 40px 24px;
+    /* ===== 层级标题 ===== */
+    .layer-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
     }
-    .kicker {
+
+    /* ===== 第一层：人格结果 ===== */
+    .result-hero { text-align: center; margin-bottom: 8px; }
+    .result-for {
       font-size: 0.82rem;
       color: var(--text-secondary);
-      margin-bottom: 8px;
-      font-weight: 500;
-      letter-spacing: 0.05em;
+      margin-bottom: 10px;
     }
-    .type-code {
-      font-size: 2.8rem;
+    .result-for strong { color: var(--accent); font-weight: 700; }
+    .result-type-code {
+      font-size: 2.6rem;
       font-weight: 900;
       color: var(--accent);
-      margin-bottom: 4px;
       letter-spacing: 1px;
+      margin-bottom: 4px;
     }
-    .type-cn {
-      font-size: 1.3rem;
+    .result-type-cn {
+      font-size: 1.2rem;
       font-weight: 700;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-    .similarity-badge {
+    .result-badge {
       display: inline-block;
       background: var(--accent-light);
       color: var(--accent);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       padding: 4px 14px;
       border-radius: 20px;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
-    .divider {
+    .result-observer-desc {
+      font-size: 0.92rem;
+      color: var(--text);
+      line-height: 1.75;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+
+    /* 雷达图 */
+    .radar-wrap {
+      text-align: center;
+      margin: 0 -8px 4px;
+    }
+    .radar-wrap canvas { max-width: 100%; }
+
+    /* ===== 层分隔 ===== */
+    .layer-sep {
       height: 1px;
       background: var(--border);
       margin: 24px 0;
     }
-    .top5-title {
-      font-size: 0.85rem;
-      color: var(--text-secondary);
-      font-weight: 600;
-      margin-bottom: 12px;
-      text-align: left;
+
+    /* ===== 第二层：观察风格 ===== */
+    .observer-card {
+      background: var(--accent-light);
+      border-radius: 10px;
+      padding: 18px 16px;
     }
-    .top-item {
+    .observer-name {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .observer-tagline {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    .observer-desc {
+      font-size: 0.88rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ===== 第三层：邀请入口 ===== */
+    .invite-btn {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+    .invite-result {
+      display: none;
+      background: var(--accent-light);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+    .invite-result.show { display: block; }
+    .invite-link-box {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.9rem;
+      gap: 8px;
+      margin-bottom: 8px;
     }
-    .top-item:last-child { border-bottom: none; }
-    .top-rank { color: var(--text-secondary); font-size: 0.8rem; width: 24px; }
-    .top-code { font-weight: 700; color: var(--accent); flex: 0 0 80px; }
-    .top-name { flex: 1; color: var(--text); }
-    .top-sim { color: var(--text-secondary); font-size: 0.82rem; }
-
-    .coming-soon-note {
-      background: var(--accent-light);
-      border-radius: 8px;
-      padding: 12px 16px;
+    .invite-link-text {
+      flex: 1;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      word-break: break-all;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-family: monospace;
+    }
+    .btn-copy-invite {
+      flex-shrink: 0;
+      padding: 8px 14px;
       font-size: 0.82rem;
-      color: var(--accent);
-      margin: 20px 0;
-      text-align: left;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-weight: 600;
+      white-space: nowrap;
+      transition: background 0.18s;
+    }
+    .btn-copy-invite:hover { background: var(--accent-hover); }
+    .invite-hint {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
       line-height: 1.6;
     }
 
+    /* ===== 操作按钮组 ===== */
     .action-group {
       display: flex;
       flex-direction: column;
       gap: 10px;
-      margin-top: 24px;
+      margin-top: 20px;
     }
     .action-group a, .action-group button {
       display: block;
@@ -90,6 +160,7 @@
       text-decoration: none;
     }
 
+    /* ===== 错误页 ===== */
     .error-card {
       text-align: center;
       padding: 40px 24px;
@@ -101,57 +172,306 @@
 <body>
   <div id="app">
     <section class="page active">
-      <div class="card result-other-card" id="result-card">
-        <!-- 由 JS 填充 -->
+      <div class="card" id="result-card" style="padding: 32px 20px;">
+        <p style="text-align:center;color:var(--text-secondary);font-size:0.9rem;">加载中…</p>
       </div>
     </section>
   </div>
 
-  <script>
-    const card = document.getElementById('result-card')
+  <script type="module">
+    import { drawRadar }              from '/src/chart.js'
+    import { calculateObserverStyle } from '/src/observer-style.js'
+    import typeDescOther              from '/data/type-desc-other.js'
+    import observerStyles             from '/data/observer-styles.js'
 
-    const raw = localStorage.getItem('dbti_other_result')
+    // ===== 工具 =====
+    async function loadJSON(path) {
+      const res = await fetch(path)
+      return res.json()
+    }
+
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath()
+      ctx.moveTo(x + r, y)
+      ctx.lineTo(x + w - r, y)
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+      ctx.lineTo(x + w, y + h - r)
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+      ctx.lineTo(x + r, y + h)
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+      ctx.lineTo(x, y + r)
+      ctx.quadraticCurveTo(x, y, x + r, y)
+      ctx.closePath()
+    }
+
+    function wrapText(ctx, text, maxW) {
+      if (!text) return []
+      const lines = []
+      let line = ''
+      for (const ch of text) {
+        const test = line + ch
+        if (ctx.measureText(test).width > maxW && line) {
+          lines.push(line); line = ch
+        } else { line = test }
+      }
+      if (line) lines.push(line)
+      return lines
+    }
+
+    // ===== 主流程 =====
+    const card = document.getElementById('result-card')
+    const raw  = localStorage.getItem('dbti_other_result')
+
     if (!raw) {
       card.innerHTML = `
         <div class="error-card">
           <h2>没有找到测试结果</h2>
           <p>请先完成他测答题流程。</p>
           <a href="/other-test.html" class="btn btn-primary" style="display:inline-block;">去测试</a>
-        </div>
-      `
+        </div>`
     } else {
-      const data = JSON.parse(raw)
+      const data       = JSON.parse(raw)
+      const [dimensions] = await Promise.all([loadJSON('/data/dimensions.json')])
+
+      // 重建 userLevels { S1: 'H', ... }
+      const userLevels = {}
+      dimensions.order.forEach((dim, i) => { userLevels[dim] = data.levels[i] || 'M' })
+
+      // 观察风格
+      const levelsArr    = data.levels.split('')
+      const styleKey     = calculateObserverStyle(levelsArr)
+      const style        = observerStyles[styleKey]
+      const observerDesc = typeDescOther[data.type] || `在你眼中 ta 是 ${data.typeCn}。`
+
+      // TOP5 HTML
       const top5HTML = (data.rankings || []).map((t, i) => `
         <div class="top-item">
           <span class="top-rank">#${i + 1}</span>
           <span class="top-code">${t.code}</span>
           <span class="top-name">${t.cn}</span>
           <span class="top-sim">${t.similarity}%</span>
-        </div>
-      `).join('')
+        </div>`).join('')
 
       card.innerHTML = `
-        <p class="kicker">你眼中的「${data.nickname}」</p>
-        <div class="type-code">${data.type}</div>
-        <div class="type-cn">${data.typeCn}</div>
-        <div class="similarity-badge">匹配度 ${data.similarity}%</div>
+        <!-- ===== 第一层：人格 ===== -->
+        <div class="layer-title">Ta 在你眼中</div>
+        <div class="result-hero">
+          <p class="result-for">你眼中的 <strong>${data.nickname}</strong></p>
+          <div class="result-type-code">${data.type}</div>
+          <div class="result-type-cn">${data.typeCn}</div>
+          <div class="result-badge">匹配度 ${data.similarity}%</div>
+        </div>
+        <p class="result-observer-desc" id="observer-desc-text"></p>
 
-        <div class="divider"></div>
-
-        <div class="top5-title">最佳匹配 TOP 5</div>
-        ${top5HTML}
-
-        <div class="coming-soon-note">
-          完整结果页（维度雷达图 + 人格详细描述 + 与自测的对比）正在开发中，敬请期待。
+        <div class="radar-wrap">
+          <canvas id="radar-chart" width="320" height="320"></canvas>
         </div>
 
+        <details style="margin-top:12px;">
+          <summary style="font-size:0.82rem;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">最佳匹配 TOP 5</summary>
+          <div style="margin-top:4px;">${top5HTML}</div>
+        </details>
+
+        <div class="layer-sep"></div>
+
+        <!-- ===== 第二层：观察风格 ===== -->
+        <div class="layer-title">你的观察风格</div>
+        <div class="observer-card">
+          <div class="observer-name" id="style-name"></div>
+          <div class="observer-tagline" id="style-tagline"></div>
+          <div class="observer-desc" id="style-desc"></div>
+        </div>
+
+        <div class="layer-sep"></div>
+
+        <!-- ===== 第三层：邀请入口 ===== -->
+        <div class="layer-title">邀请对照</div>
+        <button id="btn-invite" class="btn btn-primary invite-btn">发给 ta，让 ta 亲自测</button>
+        <div class="invite-result" id="invite-result">
+          <div class="invite-link-box">
+            <span class="invite-link-text" id="invite-link-text"></span>
+            <button class="btn-copy-invite" id="btn-copy-invite">复制</button>
+          </div>
+          <p class="invite-hint">ta 完成自测后，回到这里就能看到你们的认知偏差报告（task05 开发中）</p>
+        </div>
+
+        <div class="layer-sep"></div>
+
+        <!-- ===== 分享卡 ===== -->
+        <div class="layer-title">分享</div>
+        <button id="btn-share" class="btn btn-primary" style="width:100%;margin-bottom:10px;">生成分享卡片</button>
+
+        <!-- ===== 底部操作 ===== -->
         <div class="action-group">
-          <a href="/other-test.html" class="btn btn-primary">再测一个 ta</a>
-          <a href="/self-test.html" class="btn btn-secondary">测测我自己</a>
-          <a href="/" class="btn btn-secondary">返回首页</a>
+          <a href="/other-test.html" class="btn btn-secondary">再测一个 ta</a>
+          <a href="/self-test.html"  class="btn btn-secondary">测测我自己</a>
+          <a href="/"                class="btn btn-secondary">返回首页</a>
         </div>
       `
+
+      // 填充文本
+      document.getElementById('observer-desc-text').textContent = observerDesc
+      document.getElementById('style-name').textContent    = style.name
+      document.getElementById('style-tagline').textContent = `「${style.tagline}」`
+      document.getElementById('style-desc').textContent   = style.desc
+
+      // 绘制雷达图
+      const canvas = document.getElementById('radar-chart')
+      drawRadar(canvas, userLevels, dimensions.order, dimensions.definitions)
+
+      // ===== 邀请链接逻辑 =====
+      document.getElementById('btn-invite').addEventListener('click', () => {
+        const sessionId = Math.random().toString(36).slice(2, 10).toUpperCase()
+        localStorage.setItem('dbti_session_' + sessionId, raw)
+
+        const link = `https://dbti.zhexueyuan.com/self-test.html?invite=${sessionId}`
+        document.getElementById('invite-link-text').textContent = link
+        document.getElementById('invite-result').classList.add('show')
+        document.getElementById('btn-invite').style.display = 'none'
+
+        document.getElementById('btn-copy-invite').addEventListener('click', () => {
+          navigator.clipboard.writeText(link).then(() => {
+            const btn = document.getElementById('btn-copy-invite')
+            btn.textContent = '已复制!'
+            setTimeout(() => { btn.textContent = '复制' }, 2000)
+          })
+        })
+      })
+
+      // ===== 分享卡生成 =====
+      document.getElementById('btn-share').addEventListener('click', () => {
+        generateShareCard(data, style, observerDesc)
+      })
+    }
+
+    // ===== Canvas 分享卡 =====
+    function generateShareCard(data, style, observerDesc) {
+      const dpr = 2
+      const W = 750, H = 1000
+      const cv = document.createElement('canvas')
+      cv.width = W * dpr; cv.height = H * dpr
+      const ctx = cv.getContext('2d')
+      ctx.scale(dpr, dpr)
+
+      // 背景
+      ctx.fillStyle = '#141c18'
+      ctx.fillRect(0, 0, W, H)
+
+      // 卡片
+      const cx = 32, cy = 32, cw = W - 64, ch = H - 64
+      roundRect(ctx, cx, cy, cw, ch, 20)
+      ctx.fillStyle = '#1e2a22'
+      ctx.fill()
+
+      const MID = W / 2
+      let y = cy + 52
+
+      const font = (size, weight = '400') =>
+        `${weight} ${size}px system-ui, "PingFang SC", "Microsoft YaHei", sans-serif`
+
+      // 小标签
+      ctx.textAlign = 'center'
+      ctx.font = font(15, '500')
+      ctx.fillStyle = '#8fa893'
+      ctx.fillText('你眼中的', MID, y); y += 28
+
+      // 代号
+      ctx.font = font(22, '700')
+      ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(`「${data.nickname}」`, MID, y); y += 50
+
+      // 类型代码
+      ctx.font = font(68, '900')
+      ctx.fillStyle = '#5a8a62'
+      ctx.fillText(data.type, MID, y); y += 16
+
+      // 中文名
+      ctx.font = font(28, '700')
+      ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(data.typeCn, MID, y); y += 28
+
+      // 匹配度
+      ctx.font = font(16, '500')
+      ctx.fillStyle = '#8fa893'
+      ctx.fillText(`匹配度 ${data.similarity}%`, MID, y); y += 40
+
+      // 分割线
+      ctx.strokeStyle = '#2e3d32'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(cx + 48, y); ctx.lineTo(cx + cw - 48, y)
+      ctx.stroke(); y += 28
+
+      // 观察者描述（自动换行）
+      ctx.textAlign = 'left'
+      ctx.font = font(17, '400')
+      ctx.fillStyle = '#c8d8cc'
+      const descLines = wrapText(ctx, observerDesc, cw - 96)
+      for (const line of descLines) {
+        ctx.fillText(line, cx + 48, y); y += 26
+      }
+      y += 20
+
+      // 分割线
+      ctx.strokeStyle = '#2e3d32'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(cx + 48, y); ctx.lineTo(cx + cw - 48, y)
+      ctx.stroke(); y += 28
+
+      // 观察风格标题
+      ctx.textAlign = 'left'
+      ctx.font = font(13, '600')
+      ctx.fillStyle = '#5a8a62'
+      ctx.fillText('我的观察风格', cx + 48, y); y += 22
+
+      ctx.font = font(22, '800')
+      ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(style.name, cx + 48, y); y += 24
+
+      ctx.font = font(15, '400')
+      ctx.fillStyle = '#8fa893'
+      ctx.fillText(`「${style.tagline}」`, cx + 48, y); y += 44
+
+      // 底部分割线
+      ctx.strokeStyle = '#2e3d32'
+      ctx.lineWidth = 1
+      ctx.beginPath()
+      ctx.moveTo(cx + 48, H - 80); ctx.lineTo(cx + cw - 48, H - 80)
+      ctx.stroke()
+
+      // 水印
+      ctx.textAlign = 'center'
+      ctx.font = font(14, '400')
+      ctx.fillStyle = '#4a5e4d'
+      ctx.fillText('dbti.zhexueyuan.com  ·  仅供娱乐  ·  DBTI 镜像测试', MID, H - 52)
+
+      // 下载
+      const link = document.createElement('a')
+      link.download = `DBTI-${data.type}-${data.nickname}.png`
+      link.href = cv.toDataURL('image/png')
+      link.click()
     }
   </script>
+
+  <!-- TOP5 样式复用 -->
+  <style>
+    .top-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.88rem;
+    }
+    .top-item:last-child { border-bottom: none; }
+    .top-rank { color: var(--text-secondary); font-size: 0.78rem; width: 24px; }
+    .top-code { font-weight: 700; color: var(--accent); flex: 0 0 72px; }
+    .top-name { flex: 1; color: var(--text); }
+    .top-sim  { color: var(--text-secondary); font-size: 0.8rem; }
+
+    details summary { user-select: none; }
+    details[open] summary { margin-bottom: 8px; }
+  </style>
 </body>
 </html>
