@@ -14,7 +14,7 @@ const observerStyles = {
   },
   high_fantasy: {
     name: "剧本创作者",
-    tagline: "你对 ta 的理解非常笃定，只是不确定是理解还是想象",
+    tagline: "你对 ta 的判断很笃定，只是不确定是判断还是脑补",
     desc: "你对 ta 的判断很极端——要么很高要么很低，中间地带很少。这种笃定有多少来自真正了解，有多少来自脑补剧情，只有你自己知道。",
   },
   high_empathy: {

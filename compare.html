@@ -247,7 +247,10 @@
       const { deviationPercent, dimensionDiffs, level } =
         calculateDeviation(other.vector, selfData.vector)
 
-      const levelInfo = deviationLevels[level]
+      const levelData = deviationLevels[level]
+      const _v = levelData.variants
+      const _variant = _v[Math.floor(Math.random() * _v.length)]
+      const levelInfo = { name: levelData.name, quote: _variant.quote, desc: _variant.desc }
 
       // ===== 筛出偏差最大的维度，选 3~5 句金句 =====
       const dimOrder = ['S1','S2','S3','E1','E2','E3','A1','A2','A3','Ac1','Ac2','Ac3','So1','So2','So3']
