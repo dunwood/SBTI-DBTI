@@ -3,80 +3,181 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DBTI 人格测试</title>
-  <meta name="description" content="MBTI已经过时，DBTI来了。一个开源的娱乐性人格测试。" />
+  <title>DBTI 人格镜像测试</title>
+  <meta name="description" content="你以为的 ta，和 ta 以为的自己。DBTI 双模式人格镜像测试。" />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>" />
-  <link rel="stylesheet" href="/src/style.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #141c18;
+      --card-bg: #1e2a22;
+      --card-border: #2e3d32;
+      --text: #e8f0ea;
+      --text-secondary: #8fa893;
+      --accent: #5a8a62;
+      --accent-hover: #6fa878;
+      --accent-disabled: #3a5040;
+      --accent-disabled-text: #5a7060;
+      --font: system-ui, -apple-system, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+    }
+
+    .logo {
+      font-size: 2.6rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    .btn-group {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 40px;
+    }
+
+    @media (min-width: 400px) {
+      .btn-group {
+        flex-direction: row;
+        justify-content: center;
+      }
+    }
+
+    .btn {
+      display: block;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: var(--font);
+      text-decoration: none;
+      padding: 16px 32px;
+      line-height: 1.3;
+    }
+
+    .btn-self {
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .btn-self:hover {
+      background: var(--accent-hover);
+      transform: translateY(-2px);
+    }
+
+    .btn-self:active {
+      transform: translateY(0);
+    }
+
+    .btn-other {
+      background: var(--card-bg);
+      color: var(--accent-disabled-text);
+      border: 1.5px solid var(--card-border);
+    }
+
+    .btn-label {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .btn-hint {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 400;
+      margin-top: 4px;
+      opacity: 0.7;
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--card-border);
+      margin: 0 auto 32px;
+      max-width: 320px;
+    }
+
+    .disclaimer {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      opacity: 0.7;
+      margin-bottom: 40px;
+      line-height: 1.6;
+    }
+
+    .credits {
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+      opacity: 0.55;
+      line-height: 2;
+    }
+
+    .credits a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      animation: fadeIn 0.4s ease;
+    }
+  </style>
 </head>
 <body>
-  <div id="app">
-    <!-- 首页 -->
-    <section id="page-intro" class="page active">
-      <div class="card intro-card">
-        <h1 class="intro-title">MBTI已经过时，<br/>DBTI来了。</h1>
-        <button id="btn-start" class="btn btn-primary">开始测试</button>
-        <p class="intro-credit">开源项目 · 基于 B站UP主@蛆肉儿串儿 原创测试</p>
-        <p class="intro-note">本测试仅供娱乐</p>
-      </div>
-    </section>
+  <div class="container">
+    <h1 class="logo">DBTI</h1>
+    <p class="subtitle">你以为的 ta，和 ta 以为的自己</p>
 
-    <!-- 答题页 -->
-    <section id="page-quiz" class="page">
-      <div class="card quiz-card">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
-        <div class="progress-text" id="progress-text">0 / 31</div>
-        <div class="question-area">
-          <p class="question-text" id="question-text"></p>
-        </div>
-        <div class="options" id="options"></div>
-      </div>
-    </section>
+    <div class="btn-group">
+      <a href="/self-test.html" class="btn btn-self">
+        <span class="btn-label">我测我自己</span>
+        <span class="btn-hint">看看你是什么人格</span>
+      </a>
+      <a href="/other-test.html" class="btn btn-other">
+        <span class="btn-label">我眼中的 ta</span>
+        <span class="btn-hint">即将上线</span>
+      </a>
+    </div>
 
-    <!-- 结果页 -->
-    <section id="page-result" class="page">
-      <div class="card result-card" id="result-card">
-        <div class="result-kicker" id="result-kicker">你的主类型</div>
-        <div class="result-code" id="result-code"></div>
-        <div class="result-name" id="result-name"></div>
-        <div class="result-badge" id="result-badge"></div>
-        <div class="result-intro" id="result-intro"></div>
-        <div class="result-desc" id="result-desc"></div>
+    <div class="divider"></div>
 
-        <div class="result-secondary" id="result-secondary" style="display:none">
-          <div class="secondary-label">次要匹配</div>
-          <div class="secondary-info" id="secondary-info"></div>
-        </div>
+    <p class="disclaimer">仅供娱乐，好玩为主，不要当判决书</p>
 
-        <h3 class="section-title">十五维度评分</h3>
-        <canvas id="radar-chart" width="320" height="320"></canvas>
-        <div class="dimensions-detail" id="dimensions-detail"></div>
-
-        <div class="result-top3">
-          <h3 class="section-title">最佳匹配 TOP 5</h3>
-          <div id="top-list"></div>
-        </div>
-
-        <div class="disclaimer" id="disclaimer"></div>
-
-        <div class="result-actions">
-          <button id="btn-download" class="btn btn-primary">保存分享图片</button>
-          <button id="btn-restart" class="btn btn-secondary">重新测试</button>
-        </div>
-
-        <div class="agent-section">
-          <p class="agent-title">想自己搭一个？</p>
-          <div class="agent-cmd">
-            <code>git clone https://github.com/pingfanfan/SBTI.git && cd SBTI && npm install && npm run dev</code>
-          </div>
-          <button id="btn-agent" class="btn btn-agent">复制一键部署命令</button>
-          <p class="agent-hint">粘贴到 Claude Code / OpenClaw 即可一键运行并自定义</p>
-        </div>
-      </div>
-    </section>
+    <div class="credits">
+      <div>原创：蛆肉儿串儿（B站 UID417038183）</div>
+      <div>开源逆向：<a href="https://github.com/pingfanfan/SBTI" target="_blank" rel="noopener">pingfanfan/SBTI</a></div>
+      <div>关系模式 &amp; 他测玩法：哲学园 · 拾柒年蝉 出品</div>
+    </div>
   </div>
-
-  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
