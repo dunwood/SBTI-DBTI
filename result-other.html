@@ -350,18 +350,41 @@
           tn:     data.typeCn,
           invite: sessionId,
         })
-        const link = `https://dbti.zhexueyuan.com/self-test.html?${params}`
+        const link = `https://sbti-dbti.pages.dev/self-test.html?${params}`
         document.getElementById('invite-link-text').textContent = link
         document.getElementById('invite-result').classList.add('show')
         document.getElementById('btn-invite').style.display = 'none'
 
-        document.getElementById('btn-copy-invite').addEventListener('click', () => {
-          navigator.clipboard.writeText(link).then(() => {
-            const btn = document.getElementById('btn-copy-invite')
+        document.getElementById('btn-copy-invite').onclick = () => {
+          const btn = document.getElementById('btn-copy-invite')
+          // 优先用 clipboard API，降级用 execCommand
+          const doCopy = () => {
             btn.textContent = '已复制!'
             setTimeout(() => { btn.textContent = '复制' }, 2000)
-          })
-        })
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(link).then(doCopy).catch(() => {
+              // clipboard API 失败时 fallback
+              const ta = document.createElement('textarea')
+              ta.value = link
+              ta.style.cssText = 'position:fixed;opacity:0'
+              document.body.appendChild(ta)
+              ta.select()
+              document.execCommand('copy')
+              document.body.removeChild(ta)
+              doCopy()
+            })
+          } else {
+            const ta = document.createElement('textarea')
+            ta.value = link
+            ta.style.cssText = 'position:fixed;opacity:0'
+            document.body.appendChild(ta)
+            ta.select()
+            document.execCommand('copy')
+            document.body.removeChild(ta)
+            doCopy()
+          }
+        }
       })
 
       // ===== 分享卡生成 =====
