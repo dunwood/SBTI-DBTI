@@ -9,10 +9,10 @@ async function loadJSON(path) {
 
 async function init() {
   const [questions, dimensions, types, config] = await Promise.all([
-    loadJSON(new URL('../data/questions.json', import.meta.url).href),
-    loadJSON(new URL('../data/dimensions.json', import.meta.url).href),
-    loadJSON(new URL('../data/types.json', import.meta.url).href),
-    loadJSON(new URL('../data/config.json', import.meta.url).href),
+    loadJSON('/data/questions.json'),
+    loadJSON('/data/dimensions.json'),
+    loadJSON('/data/types.json'),
+    loadJSON('/data/config.json'),
   ])
 
   // 邀请参数检测（无 invite 时不影响任何现有逻辑）
