@@ -265,6 +265,10 @@
           <a href="/other-test.html" class="btn btn-primary" style="display:inline-block;">去测试</a>
         </div>`
     } else {
+      // 更新测试计数
+      const _cnt = parseInt(localStorage.getItem('dbti_test_count') || '0')
+      localStorage.setItem('dbti_test_count', String(_cnt + 1))
+
       const data       = JSON.parse(raw)
       const [dimensions] = await Promise.all([loadJSON('/data/dimensions.json')])
 
@@ -442,124 +446,97 @@
       const ctx = cv.getContext('2d')
       ctx.scale(dpr, dpr)
 
-      const font = (size, weight = '400') =>
-        `${weight} ${size}px system-ui, "PingFang SC", "Microsoft YaHei", sans-serif`
+      const MID = W / 2
+      const f = (sz, w = '400') =>
+        `${w} ${sz}px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif`
 
-      // 背景
-      ctx.fillStyle = '#141c18'
+      // ── 径向渐变背景 ──
+      const grd = ctx.createRadialGradient(MID, 380, 60, MID, 380, 720)
+      grd.addColorStop(0, '#1e3028')
+      grd.addColorStop(1, '#0b1410')
+      ctx.fillStyle = grd
       ctx.fillRect(0, 0, W, H)
 
-      // 卡片
-      const cx = 32, cy = 32, cw = W - 64
-      roundRect(ctx, cx, cy, cw, H - 64, 20)
-      ctx.fillStyle = '#1e2a22'
-      ctx.fill()
-
-      const MID  = W / 2
-      const PAD  = cx + 52        // 左对齐起点
-      const MAXW = cw - 104       // 文字最大宽度
-
       function sep(y) {
-        ctx.strokeStyle = '#2e3d32'; ctx.lineWidth = 1
-        ctx.beginPath()
-        ctx.moveTo(cx + 48, y); ctx.lineTo(cx + cw - 48, y)
-        ctx.stroke()
+        ctx.save()
+        ctx.strokeStyle = 'rgba(255,255,255,0.1)'
+        ctx.lineWidth = 0.5
+        ctx.beginPath(); ctx.moveTo(56, y); ctx.lineTo(W - 56, y); ctx.stroke()
+        ctx.restore()
       }
 
-      // ── 第一步：先把所有文字行算好，计算总高度 ──
-      ctx.font = font(17, '400')
-      const descLines  = wrapText(ctx, observerDesc, MAXW)
-      ctx.font = font(16, '400')
-      const styleLines = wrapText(ctx, style.desc, MAXW)
+      // 提取第一句话（不超过 26 字）
+      const dotIdx = observerDesc.indexOf('。')
+      const excerpt = dotIdx > 0 && dotIdx < 30
+        ? observerDesc.slice(0, dotIdx + 1)
+        : (observerDesc.slice(0, 26) + (observerDesc.length > 26 ? '…' : ''))
 
-      // 各区块固定高度估算（不含动态文字行）
-      // 区块1 header：标签+代号+TYPE+中文名+匹配度
-      const H1 = 38 + 80 + 56 + 36 + 32  // = 242
-      // 区块2 desc：动态行
-      const H2 = descLines.length * 30
-      // 区块3 style：标题+名称+标语+desc动态行
-      const H3 = 28 + 40 + 32 + styleLines.length * 28
+      let y = 84
 
-      // 可用内容区：从 card top+80 到 card bottom-100
-      const CONTENT_TOP    = cy + 80
-      const CONTENT_BOTTOM = H - cy - 100
-      const CONTENT_H      = CONTENT_BOTTOM - CONTENT_TOP  // ~736px
-
-      // 两条分隔线各占 sep本身(1px) + 上下padding
-      // 总内容高 = H1 + H2 + H3 + 2条分割线区域
-      const totalContent = H1 + H2 + H3
-      // 剩余空间分配给 3 处间隔（sep上方、sep下方、底部）
-      const extraSpace   = CONTENT_H - totalContent
-      // 分割线区域高度（含上下margin）= extraSpace / 3，最小 40
-      const SEP_H = Math.max(40, Math.floor(extraSpace / 3))
-
-      // ── 第二步：按计算好的坐标绘制 ──
-      let y = CONTENT_TOP
-
-      // ===== 区块1：人格头部（居中）=====
+      // ── 顶部：标签 + 代号 ──
       ctx.textAlign = 'center'
+      ctx.font = f(13, '500'); ctx.fillStyle = '#6fa878'
+      ctx.fillText('我  眼  中  的', MID, y); y += 44
 
-      // 各行 y 值基于 Canvas baseline 语义计算：
-      // baseline 在 y，ascender ≈ fontSize*0.75 在 y 上方，descender ≈ fontSize*0.25 在 y 下方
-      // 下一行 baseline = 当前行 bottom + gap + 下一行 ascender
+      ctx.font = f(32, '700'); ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(`「${data.nickname}」`, MID, y); y += 62
 
-      ctx.font = font(15, '500'); ctx.fillStyle = '#8fa893'
-      ctx.fillText('你眼中的', MID, y)
-      y += 38   // bottom≈y+4, gap=14, next ascender=20（font24）→ 38
+      sep(y); y += 62
 
-      ctx.font = font(24, '700'); ctx.fillStyle = '#e8f0ea'
-      ctx.fillText(`「${data.nickname}」`, MID, y)
-      y += 80   // bottom≈y+6, gap=20, next ascender=54（font72）→ 80
+      // ── TYPE CODE 区域（装饰 pill 背景）──
+      ctx.font = f(86, '900')
+      const codeW = ctx.measureText(data.type).width
+      const pillW = codeW + 96, pillH = 116
+      roundRect(ctx, MID - pillW / 2, y - 88, pillW, pillH, 18)
+      const pillGrd = ctx.createLinearGradient(MID - pillW / 2, 0, MID + pillW / 2, 0)
+      pillGrd.addColorStop(0, 'rgba(90,138,98,0.28)')
+      pillGrd.addColorStop(1, 'rgba(90,138,98,0.10)')
+      ctx.fillStyle = pillGrd; ctx.fill()
 
-      ctx.font = font(72, '900'); ctx.fillStyle = '#5a8a62'
-      ctx.fillText(data.type, MID, y)
-      y += 56   // bottom≈y+18, gap=14, next ascender=24（font30）→ 56（视觉留白适中）
+      ctx.font = f(86, '900'); ctx.fillStyle = '#5a8a62'
+      ctx.fillText(data.type, MID, y); y += 50
 
-      ctx.font = font(30, '700'); ctx.fillStyle = '#e8f0ea'
-      ctx.fillText(data.typeCn, MID, y)
-      y += 36   // bottom≈y+8, gap=15, next ascender=13（font17）→ 36
+      ctx.font = f(34, '700'); ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(data.typeCn, MID, y); y += 40
 
-      ctx.font = font(17, '500'); ctx.fillStyle = '#8fa893'
-      ctx.fillText(`匹配度 ${data.similarity}%`, MID, y)
-      y += 32   // 匹配度底部到分割线的间距
+      ctx.font = f(15, '500'); ctx.fillStyle = '#7a9882'
+      ctx.fillText(`匹配度 ${data.similarity}%`, MID, y); y += 58
 
-      // 分割线1
-      y += Math.floor(SEP_H * 0.4)
-      sep(y); y += Math.floor(SEP_H * 0.6)
+      sep(y); y += 52
 
-      // ===== 区块2：他测描述（左对齐）=====
-      ctx.textAlign = 'left'
-      ctx.font = font(17, '400'); ctx.fillStyle = '#c8d8cc'
-      for (const line of descLines) {
-        ctx.fillText(line, PAD, y); y += 30
+      // ── 短句摘录 ──
+      ctx.font = f(20, '400'); ctx.fillStyle = '#b0c4b8'
+      const excerptLines = wrapText(ctx, excerpt, W - 160)
+      for (const line of excerptLines) {
+        ctx.fillText(line, MID, y); y += 32
+      }
+      y += 28
+
+      sep(y); y += 58
+
+      // ── 观察风格 ──
+      ctx.font = f(12, '600'); ctx.fillStyle = '#5a8a62'
+      ctx.fillText('我  的  观  察  风  格', MID, y); y += 46
+
+      ctx.font = f(38, '800'); ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(style.name, MID, y); y += 54
+
+      ctx.font = f(19, '400'); ctx.fillStyle = '#8fa893'
+      ctx.fillText(`「${style.tagline}」`, MID, y); y += 46
+
+      ctx.font = f(17, '400'); ctx.fillStyle = '#7a9882'
+      const styleDescLines = wrapText(ctx, style.desc, W - 160)
+      for (const line of styleDescLines.slice(0, 2)) {
+        ctx.fillText(line, MID, y); y += 28
       }
 
-      // 分割线2
-      y += Math.floor(SEP_H * 0.4)
-      sep(y); y += Math.floor(SEP_H * 0.6)
+      // ── 底部水印 ──
+      sep(H - 76)
+      ctx.font = f(14, '400'); ctx.fillStyle = '#4a5e4d'
+      ctx.fillText('DBTI · dbti.zhexueyuan.com', MID, H - 50)
+      ctx.font = f(12, '400'); ctx.fillStyle = '#2e3d32'
+      ctx.fillText('仅供娱乐，好玩为主，不要当判决书', MID, H - 26)
 
-      // ===== 区块3：观察风格（左对齐）=====
-      ctx.font = font(13, '600'); ctx.fillStyle = '#5a8a62'
-      ctx.fillText('我的观察风格', PAD, y); y += 28
-
-      ctx.font = font(26, '800'); ctx.fillStyle = '#e8f0ea'
-      ctx.fillText(style.name, PAD, y); y += 40
-
-      ctx.font = font(16, '400'); ctx.fillStyle = '#8fa893'
-      ctx.fillText(`「${style.tagline}」`, PAD, y); y += 32
-
-      ctx.font = font(16, '400'); ctx.fillStyle = '#c8d8cc'
-      for (const line of styleLines) {
-        ctx.fillText(line, PAD, y); y += 28
-      }
-
-      // ===== 底部水印 =====
-      sep(H - cy - 68)
-      ctx.textAlign = 'center'
-      ctx.font = font(14, '400'); ctx.fillStyle = '#4a5e4d'
-      ctx.fillText('dbti.zhexueyuan.com  ·  仅供娱乐  ·  DBTI 镜像测试', MID, H - cy - 36)
-
-      // 下载
       const link = document.createElement('a')
       link.download = `DBTI-${data.type}-${data.nickname}.png`
       link.href = cv.toDataURL('image/png')

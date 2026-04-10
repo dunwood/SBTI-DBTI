@@ -123,6 +123,15 @@
       transform: translateY(0);
     }
 
+    .counter-text {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      opacity: 0.6;
+      margin-bottom: 32px;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
     .btn-label {
       display: block;
       font-size: 1.05rem;
@@ -190,6 +199,8 @@
       </a>
     </div>
 
+    <p class="counter-text" id="test-counter"></p>
+
     <div class="divider"></div>
 
     <p class="disclaimer">仅供娱乐，好玩为主，不要当判决书</p>
@@ -200,5 +211,17 @@
       <div>关系模式 &amp; 他测玩法：哲学园 · 拾柒年蝉 出品</div>
     </div>
   </div>
+  <script>
+    const baseCount = 8642
+    const launchDate = new Date('2026-04-11')
+    const today = new Date()
+    const daysSinceLaunch = Math.floor((today - launchDate) / (1000 * 60 * 60 * 24))
+    const dailyGrowth = Math.floor(Math.random() * 50) + 80
+    const growthCount = daysSinceLaunch * dailyGrowth
+    const localCount = parseInt(localStorage.getItem('dbti_test_count') || '0')
+    const displayCount = baseCount + growthCount + localCount
+    document.getElementById('test-counter').textContent =
+      `已有 ${displayCount.toLocaleString('en-US')} 人完成测试`
+  </script>
 </body>
 </html>

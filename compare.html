@@ -473,81 +473,94 @@
       const ctx = cv.getContext('2d')
       ctx.scale(dpr, dpr)
 
-      // 背景
-      ctx.fillStyle = '#141c18'; ctx.fillRect(0, 0, W, H)
+      const MID = W / 2
+      const f = (sz, w = '400') =>
+        `${w} ${sz}px "PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif`
 
-      // 卡片
-      roundRect(ctx, 32, 32, W - 64, H - 64, 20)
-      ctx.fillStyle = '#1e2a22'; ctx.fill()
+      // ── 径向渐变背景（偏蓝绿双色调，体现对照感）──
+      const grd = ctx.createRadialGradient(MID, H * 0.38, 40, MID, H * 0.38, 640)
+      grd.addColorStop(0, '#1a2a30')
+      grd.addColorStop(1, '#0a1018')
+      ctx.fillStyle = grd
+      ctx.fillRect(0, 0, W, H)
 
-      const MID   = W / 2
-      const font  = (sz, w='400') =>
-        `${w} ${sz}px system-ui,"PingFang SC","Microsoft YaHei",sans-serif`
+      function sep(y, alpha = 0.1) {
+        ctx.save()
+        ctx.strokeStyle = `rgba(255,255,255,${alpha})`
+        ctx.lineWidth = 0.5
+        ctx.beginPath(); ctx.moveTo(56, y); ctx.lineTo(W - 56, y); ctx.stroke()
+        ctx.restore()
+      }
 
-      let y = 80
+      let y = 72
 
-      // 标题
+      // ── 标题 + 代号 ──
       ctx.textAlign = 'center'
-      ctx.font = font(16, '600'); ctx.fillStyle = '#8fa893'
-      ctx.fillText('认知偏差报告', MID, y); y += 36
+      ctx.font = f(13, '600'); ctx.fillStyle = '#7a9898'
+      ctx.fillText('认  知  偏  差  报  告', MID, y); y += 42
+      ctx.font = f(24, '700'); ctx.fillStyle = '#d8e8e0'
+      ctx.fillText(`「${other.nickname}」`, MID, y); y += 54
 
-      // 代号
-      ctx.font = font(20, '700'); ctx.fillStyle = '#e8f0ea'
-      ctx.fillText(`「${other.nickname}」`, MID, y); y += 50
+      sep(y); y += 38
 
-      // 双类型
-      const bx = 80, bw = (W - 160 - 20) / 2
-      roundRect(ctx, bx, y, bw, 90, 10)
-      ctx.fillStyle = 'rgba(90,138,98,0.15)'; ctx.fill()
-      roundRect(ctx, bx + bw + 20, y, bw, 90, 10)
-      ctx.fillStyle = 'rgba(66,133,244,0.1)'; ctx.fill()
+      // ── 双结果对比框 ──
+      const boxW = (W - 152) / 2, boxH = 112, boxY = y
 
+      roundRect(ctx, 52, boxY, boxW, boxH, 12)
+      ctx.fillStyle = 'rgba(90,138,98,0.2)'; ctx.fill()
+      ctx.strokeStyle = 'rgba(90,138,98,0.45)'; ctx.lineWidth = 1; ctx.stroke()
+
+      roundRect(ctx, 52 + boxW + 48, boxY, boxW, boxH, 12)
+      ctx.fillStyle = 'rgba(66,133,244,0.14)'; ctx.fill()
+      ctx.strokeStyle = 'rgba(66,133,244,0.35)'; ctx.lineWidth = 1; ctx.stroke()
+
+      const lx = 52 + boxW / 2
+      const rx = 52 + boxW + 48 + boxW / 2
+
+      ctx.font = f(11, '600'); ctx.fillStyle = '#8fa893'
+      ctx.fillText('你眼中的 ta', lx, boxY + 24)
+      ctx.fillStyle = '#8fa8c4'
+      ctx.fillText('ta 自测结果', rx, boxY + 24)
+
+      ctx.font = f(34, '900')
+      ctx.fillStyle = '#5a8a62'; ctx.fillText(other.type, lx, boxY + 68)
+      ctx.fillStyle = '#4285f4'; ctx.fillText(self.type,  rx, boxY + 68)
+
+      ctx.font = f(14, '600'); ctx.fillStyle = '#c8d8cc'
+      ctx.fillText(other.typeCn, lx, boxY + 96)
+      ctx.fillText(self.typeCn,  rx, boxY + 96)
+
+      y = boxY + boxH + 46
+
+      sep(y); y += 46
+
+      // ── 偏差大数字 ──
+      ctx.font = f(72, '900'); ctx.fillStyle = '#5a8a62'
+      ctx.fillText(deviationPercent + '%', MID, y + 60); y += 76
+
+      ctx.font = f(14, '500'); ctx.fillStyle = '#7a9882'
+      ctx.fillText('认知偏差', MID, y); y += 36
+
+      ctx.font = f(24, '800'); ctx.fillStyle = '#e8f0ea'
+      ctx.fillText(levelInfo.name, MID, y); y += 38
+
+      ctx.font = f(16, '400'); ctx.fillStyle = '#8fa893'
+      ctx.fillText(`「${levelInfo.quote}」`, MID, y); y += 52
+
+      sep(y); y += 44
+
+      // ── 描述（自动换行，居左）──
+      ctx.textAlign = 'left'; ctx.font = f(16, '400'); ctx.fillStyle = '#b0c4b8'
+      const lines = wrapText(ctx, levelInfo.desc, W - 144)
+      for (const line of lines) { ctx.fillText(line, 72, y); y += 27 }
+
+      // ── 底部水印 ──
+      sep(H - 70)
       ctx.textAlign = 'center'
-      const lx = bx + bw / 2, rx = bx + bw + 20 + bw / 2
-
-      ctx.font = font(11, '600'); ctx.fillStyle = '#8fa893'
-      ctx.fillText('你眼中的 ta', lx, y + 20)
-      ctx.fillText('ta 自测结果', rx, y + 20)
-
-      ctx.font = font(30, '900')
-      ctx.fillStyle = '#5a8a62'; ctx.fillText(other.type, lx, y + 56)
-      ctx.fillStyle = '#4285f4'; ctx.fillText(self.type,  rx, y + 56)
-
-      ctx.font = font(14, '600'); ctx.fillStyle = '#c8d8cc'
-      ctx.fillText(other.typeCn, lx, y + 76)
-      ctx.fillText(self.typeCn,  rx, y + 76)
-      y += 110
-
-      // 分割线
-      ctx.strokeStyle = '#2e3d32'; ctx.lineWidth = 1
-      ctx.beginPath(); ctx.moveTo(96, y); ctx.lineTo(W - 96, y); ctx.stroke()
-      y += 32
-
-      // 偏差分数
-      ctx.font = font(60, '900'); ctx.fillStyle = '#5a8a62'
-      ctx.fillText(deviationPercent + '%', MID, y); y += 20
-      ctx.font = font(14, '500'); ctx.fillStyle = '#8fa893'
-      ctx.fillText('认知偏差', MID, y); y += 28
-      ctx.font = font(20, '800'); ctx.fillStyle = '#e8f0ea'
-      ctx.fillText(levelInfo.name, MID, y); y += 30
-      ctx.font = font(15, '400'); ctx.fillStyle = '#8fa893'
-      ctx.fillText(`「${levelInfo.quote}」`, MID, y); y += 50
-
-      // 分割线
-      ctx.strokeStyle = '#2e3d32'; ctx.lineWidth = 1
-      ctx.beginPath(); ctx.moveTo(96, y); ctx.lineTo(W - 96, y); ctx.stroke()
-      y += 30
-
-      // 描述（自动换行）
-      ctx.textAlign = 'left'; ctx.font = font(15, '400'); ctx.fillStyle = '#c8d8cc'
-      const lines = wrapText(ctx, levelInfo.desc, W - 192)
-      for (const line of lines) { ctx.fillText(line, 96, y); y += 24 }
-      y += 24
-
-      // 水印
-      ctx.textAlign = 'center'
-      ctx.font = font(13, '400'); ctx.fillStyle = '#4a5e4d'
-      ctx.fillText('dbti.zhexueyuan.com  ·  仅供娱乐  ·  DBTI 镜像测试', MID, H - 52)
+      ctx.font = f(13, '400'); ctx.fillStyle = '#4a5e4d'
+      ctx.fillText('DBTI · dbti.zhexueyuan.com', MID, H - 46)
+      ctx.font = f(11, '400'); ctx.fillStyle = '#2e3d32'
+      ctx.fillText('仅供娱乐，好玩为主，不要当判决书', MID, H - 24)
 
       const link = document.createElement('a')
       link.download = `DBTI-对照-${other.type}vs${self.type}.png`

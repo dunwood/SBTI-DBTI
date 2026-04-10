@@ -34,6 +34,10 @@ async function init() {
   }
 
   function onQuizComplete(answers, isDrunk) {
+    // 更新测试计数
+    const _cnt = parseInt(localStorage.getItem('dbti_test_count') || '0')
+    localStorage.setItem('dbti_test_count', String(_cnt + 1))
+
     const scores = calcDimensionScores(answers, questions.main)
     const levels = scoresToLevels(scores, config.scoring.levelThresholds)
     const result = determineResult(levels, dimensions.order, types.standard, types.special, { isDrunk })
