@@ -150,6 +150,16 @@
       line-height: 1.6;
     }
     .gap-quote-item:last-child { border-bottom: none; }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .gap-quote-anim {
+      opacity: 0;
+      animation: fadeInUp 0.4s ease forwards;
+    }
+
     .gap-quote-bullet {
       flex-shrink: 0;
       width: 6px; height: 6px;
@@ -266,8 +276,8 @@
       }).filter(Boolean)
 
       const quotesHTML = selectedQuotes.length
-        ? selectedQuotes.map(q => `
-            <div class="gap-quote-item">
+        ? selectedQuotes.map((q, qi) => `
+            <div class="gap-quote-item gap-quote-anim" style="animation-delay:${0.2 + qi * 0.15}s">
               <span class="gap-quote-bullet"></span>
               <span>${q}</span>
             </div>`).join('')
@@ -295,7 +305,7 @@
 
         <!-- 偏差评分 -->
         <div class="deviation-block">
-          <div class="deviation-pct">${deviationPercent}%</div>
+          <div class="deviation-pct" id="deviation-pct-el">0%</div>
           <div class="deviation-label">认知偏差</div>
           <div class="deviation-level-name">${levelInfo.name}</div>
           <div class="deviation-quote">「${levelInfo.quote}」</div>
@@ -335,6 +345,18 @@
           <div>关系模式 &amp; 他测玩法：哲学园 · 拾柒年蝉 出品</div>
         </div>
       `
+
+      // ===== 偏差百分比计数动画 =====
+      const pctEl = document.getElementById('deviation-pct-el')
+      const pctTarget = deviationPercent
+      const pctDuration = 500
+      const pctStart = performance.now()
+      function animatePct(now) {
+        const progress = Math.min((now - pctStart) / pctDuration, 1)
+        pctEl.textContent = Math.round(progress * pctTarget) + '%'
+        if (progress < 1) requestAnimationFrame(animatePct)
+      }
+      requestAnimationFrame(animatePct)
 
       // ===== 绘制双线雷达图 =====
       const canvas = document.getElementById('dual-radar')
@@ -422,9 +444,14 @@
         ctx.strokeStyle = strokeColor; ctx.lineWidth = 2; ctx.stroke()
       }
 
-      // 他测（绿）在下，自测（蓝）在上
-      drawPoly(otherVec, 'rgba(90,138,98,0.2)',   'rgba(90,138,98,0.8)')
-      drawPoly(selfVec,  'rgba(66,133,244,0.15)', 'rgba(66,133,244,0.8)')
+      // 先画他测（绿），停顿 300ms 后再画自测（蓝）
+      drawPoly(otherVec, 'rgba(90,138,98,0.2)', 'rgba(90,138,98,0.8)')
+      drawDots(otherVec, '#5a8a62')
+
+      setTimeout(() => {
+        drawPoly(selfVec, 'rgba(66,133,244,0.15)', 'rgba(66,133,244,0.8)')
+        drawDots(selfVec, '#4285f4')
+      }, 300)
 
       // 数据点
       function drawDots(vec, color) {
@@ -436,8 +463,6 @@
           ctx.fillStyle = color; ctx.fill()
         }
       }
-      drawDots(otherVec, '#5a8a62')
-      drawDots(selfVec,  '#4285f4')
     }
 
     // ===== 对照分享卡 =====

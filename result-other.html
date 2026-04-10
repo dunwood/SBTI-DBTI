@@ -171,6 +171,30 @@
       text-decoration: none;
     }
 
+    /* ===== 入场动画 ===== */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes radarZoom {
+      from { opacity: 0; transform: scale(0.6); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .anim-layer {
+      opacity: 0;
+      animation: fadeInUp 0.5s ease forwards;
+    }
+    .anim-layer:nth-child(1) { animation-delay: 0.15s; }
+    .anim-layer:nth-child(2) { animation-delay: 0.4s; }
+    .anim-layer:nth-child(3) { animation-delay: 0.65s; }
+    .anim-layer:nth-child(4) { animation-delay: 0.9s; }
+    .anim-radar {
+      opacity: 0;
+      transform-origin: center;
+      animation: radarZoom 0.5s ease forwards;
+      animation-delay: 0.5s;
+    }
+
     /* ===== 错误页 ===== */
     .error-card {
       text-align: center;
@@ -265,64 +289,70 @@
 
       card.innerHTML = `
         <!-- ===== 第一层：人格 ===== -->
-        <div class="layer-title">Ta 在你眼中</div>
-        <div class="result-hero">
-          <p class="result-for">你眼中的 <strong>${data.nickname}</strong></p>
-          <div class="result-type-code">${data.type}</div>
-          <div class="result-type-cn">${data.typeCn}</div>
-          <div class="result-badge">匹配度 ${data.similarity}%</div>
+        <div class="anim-layer">
+          <div class="layer-title">Ta 在你眼中</div>
+          <div class="result-hero">
+            <p class="result-for">你眼中的 <strong>${data.nickname}</strong></p>
+            <div class="result-type-code">${data.type}</div>
+            <div class="result-type-cn">${data.typeCn}</div>
+            <div class="result-badge">匹配度 ${data.similarity}%</div>
+          </div>
+          <p class="result-observer-desc" id="observer-desc-text"></p>
+          <div class="radar-wrap anim-radar">
+            <canvas id="radar-chart" width="320" height="320"></canvas>
+          </div>
+          <details style="margin-top:12px;">
+            <summary style="font-size:0.82rem;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">最佳匹配 TOP 5</summary>
+            <div style="margin-top:4px;">${top5HTML}</div>
+          </details>
         </div>
-        <p class="result-observer-desc" id="observer-desc-text"></p>
-
-        <div class="radar-wrap">
-          <canvas id="radar-chart" width="320" height="320"></canvas>
-        </div>
-
-        <details style="margin-top:12px;">
-          <summary style="font-size:0.82rem;color:var(--text-secondary);cursor:pointer;margin-bottom:8px;">最佳匹配 TOP 5</summary>
-          <div style="margin-top:4px;">${top5HTML}</div>
-        </details>
 
         <div class="layer-sep"></div>
 
         <!-- ===== 第二层：观察风格 ===== -->
-        <div class="layer-title">你的观察风格</div>
-        <div class="observer-card">
-          <div class="observer-name" id="style-name"></div>
-          <div class="observer-tagline" id="style-tagline"></div>
-          <div class="observer-desc" id="style-desc"></div>
+        <div class="anim-layer">
+          <div class="layer-title">你的观察风格</div>
+          <div class="observer-card">
+            <div class="observer-name" id="style-name"></div>
+            <div class="observer-tagline" id="style-tagline"></div>
+            <div class="observer-desc" id="style-desc"></div>
+          </div>
         </div>
 
         <div class="layer-sep"></div>
 
         <!-- ===== 第三层：邀请入口 ===== -->
-        <div class="layer-title">邀请对照</div>
-        <button id="btn-invite" class="btn btn-primary invite-btn">发给 ta，让 ta 亲自测</button>
-        <div class="invite-result" id="invite-result">
-          <div class="invite-link-box">
-            <span class="invite-link-text" id="invite-link-text"></span>
-            <button class="btn-copy-invite" id="btn-copy-invite">复制</button>
+        <div class="anim-layer">
+          <div class="layer-title">邀请对照</div>
+          <button id="btn-invite" class="btn btn-primary invite-btn">发给 ta，让 ta 亲自测</button>
+          <div class="invite-result" id="invite-result">
+            <div class="invite-link-box">
+              <span class="invite-link-text" id="invite-link-text"></span>
+              <button class="btn-copy-invite" id="btn-copy-invite">复制</button>
+            </div>
+            <p class="invite-hint">ta 打开链接完成自测后，即可直接看到认知偏差报告。ta 也可以把对照链接发回给你查看。</p>
           </div>
-          <p class="invite-hint">ta 打开链接完成自测后，即可直接看到认知偏差报告。ta 也可以把对照链接发回给你查看。</p>
         </div>
 
         <div class="layer-sep"></div>
 
         <!-- ===== 分享卡 ===== -->
-        <div class="layer-title">分享</div>
-        <button id="btn-share" class="btn btn-primary" style="width:100%;margin-bottom:10px;">生成分享卡片</button>
-        <button id="btn-copy-text" class="btn btn-secondary" style="width:100%;margin-bottom:10px;">复制分享文案</button>
+        <div class="anim-layer">
+          <div class="layer-title">分享</div>
+          <button id="btn-share" class="btn btn-primary" style="width:100%;margin-bottom:10px;">生成分享卡片</button>
+          <button id="btn-copy-text" class="btn btn-secondary" style="width:100%;margin-bottom:10px;">复制分享文案</button>
 
-        <!-- ===== 底部操作 ===== -->
-        <div class="action-group">
-          <a href="/other-test.html" class="btn btn-secondary">再测一个 ta</a>
-          <a href="/self-test.html"  class="btn btn-secondary">测测我自己</a>
-          <a href="/"                class="btn btn-secondary">返回首页</a>
-        </div>
-        <div class="intro-credit" style="margin-top:20px;">
-          <div>原创：蛆肉儿串儿（B站 UID417038183）</div>
-          <div>开源逆向：pingfanfan/SBTI</div>
-          <div>关系模式 &amp; 他测玩法：哲学园 · 拾柒年蝉 出品</div>
+          <!-- ===== 底部操作 ===== -->
+          <div class="action-group">
+            <a href="/other-test.html" class="btn btn-secondary">再测一个 ta</a>
+            <a href="/self-test.html"  class="btn btn-secondary">测测我自己</a>
+            <a href="/"                class="btn btn-secondary">返回首页</a>
+          </div>
+          <div class="intro-credit" style="margin-top:20px;">
+            <div>原创：蛆肉儿串儿（B站 UID417038183）</div>
+            <div>开源逆向：pingfanfan/SBTI</div>
+            <div>关系模式 &amp; 他测玩法：哲学园 · 拾柒年蝉 出品</div>
+          </div>
         </div>
       `
 

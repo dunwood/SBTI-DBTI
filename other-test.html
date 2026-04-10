@@ -182,10 +182,12 @@
         </div>
         <div class="progress-text" id="progress-text">0 / 30</div>
         <p class="quiz-for">你眼中的 <strong id="quiz-nickname-label"></strong></p>
-        <div class="question-area">
-          <p class="question-text" id="question-text"></p>
+        <div id="quiz-content">
+          <div class="question-area">
+            <p class="question-text" id="question-text"></p>
+          </div>
+          <div class="options" id="options"></div>
         </div>
-        <div class="options" id="options"></div>
       </div>
     </section>
 
@@ -273,6 +275,8 @@
       els.text.textContent = `${current} / ${queue.length}`
     }
 
+    const quizContent = document.getElementById('quiz-content')
+
     function renderQuestion() {
       const q = queue[current]
       els.qText.textContent = q.text
@@ -285,6 +289,10 @@
         els.options.appendChild(btn)
       })
       updateProgress()
+      // 滑入动画
+      quizContent.classList.remove('quiz-leave', 'quiz-enter')
+      void quizContent.offsetWidth // force reflow
+      quizContent.classList.add('quiz-enter')
     }
 
     function selectOption(question, option) {
@@ -293,7 +301,10 @@
       if (current >= queue.length) {
         finishQuiz()
       } else {
-        renderQuestion()
+        // 滑出后再渲染新题
+        quizContent.classList.remove('quiz-enter')
+        quizContent.classList.add('quiz-leave')
+        setTimeout(renderQuestion, 200)
       }
     }
 
